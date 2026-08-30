@@ -1,8 +1,6 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
-
-const cssPath = path.join(__dirname, 'frontend', 'src', 'exam.css');
 const existing = fs.readFileSync(cssPath, 'utf8');
 
 if (existing.includes('.ta-page')) {
