@@ -1,0 +1,499 @@
+/* =========================================================
+   AceIT Up — Cinematic Splash Screen
+   ========================================================= */
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #111827 0%,
+      #05070b 42%,
+      #000000 100%
+    );
+
+  color: white;
+
+  animation: splashExit 0.8s ease 4.2s forwards;
+}
+
+/* ---------------------------------------------------------
+   Background glow
+   --------------------------------------------------------- */
+
+.splash-glow {
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.025) 35%,
+    transparent 70%
+  );
+
+  filter: blur(10px);
+
+  animation: glowPulse 3.5s ease-in-out forwards;
+}
+
+/* ---------------------------------------------------------
+   Cinematic light streaks
+   --------------------------------------------------------- */
+
+.splash-light {
+  position: absolute;
+
+  width: 2px;
+  height: 160vh;
+
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+
+  opacity: 0;
+
+  filter: blur(1px);
+}
+
+.splash-light--one {
+  transform: rotate(28deg);
+  animation: lightOne 2.2s ease-out 0.15s forwards;
+}
+
+.splash-light--two {
+  transform: rotate(-28deg);
+  animation: lightTwo 2.2s ease-out 0.3s forwards;
+}
+
+.splash-light--three {
+  transform: rotate(8deg);
+  animation: lightThree 2.4s ease-out 0.55s forwards;
+}
+
+/* ---------------------------------------------------------
+   Main content
+   --------------------------------------------------------- */
+
+.splash-content {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+/* ---------------------------------------------------------
+   Original A symbol
+   --------------------------------------------------------- */
+
+.splash-symbol {
+  width: 72px;
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 20px;
+
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 18px;
+
+  transform: scale(0.2) rotate(-15deg);
+  opacity: 0;
+
+  box-shadow:
+    0 0 0 rgba(255, 255, 255, 0),
+    inset 0 0 20px rgba(255, 255, 255, 0.03);
+
+  animation:
+    symbolReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards,
+    symbolGlow 2s ease-in-out 1.8s infinite alternate;
+}
+
+.splash-symbol span {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -3px;
+
+  transform: translateY(-1px);
+}
+
+/* ---------------------------------------------------------
+   AceIT Up title
+   --------------------------------------------------------- */
+
+.splash-title {
+  margin: 0;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: clamp(42px, 8vw, 76px);
+  font-weight: 800;
+
+  letter-spacing: -3px;
+
+  opacity: 0;
+  transform: scale(0.75);
+
+  text-shadow:
+    0 0 25px rgba(255, 255, 255, 0.08);
+
+  animation:
+    titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.35s forwards;
+}
+
+.splash-title span:nth-child(1) {
+  opacity: 0;
+  animation: wordReveal 0.7s ease 1.45s forwards;
+}
+
+.splash-title span:nth-child(2) {
+  opacity: 0;
+  animation: wordReveal 0.7s ease 1.65s forwards;
+}
+
+.splash-title span:nth-child(3) {
+  opacity: 0;
+  animation: wordReveal 0.7s ease 1.82s forwards;
+}
+
+/* ---------------------------------------------------------
+   Tagline
+   --------------------------------------------------------- */
+
+.splash-tagline {
+  margin: 18px 0 0;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: clamp(13px, 2vw, 17px);
+
+  font-weight: 400;
+
+  letter-spacing: 1.8px;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  opacity: 0;
+  transform: translateY(12px);
+
+  animation:
+    taglineReveal 0.9s ease 2.35s forwards;
+}
+
+/* ---------------------------------------------------------
+   Bottom progress line
+   --------------------------------------------------------- */
+
+.splash-progress {
+  position: absolute;
+
+  left: 50%;
+  bottom: 38px;
+
+  width: min(260px, 55vw);
+  height: 2px;
+
+  transform: translateX(-50%);
+
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  border-radius: 10px;
+
+  opacity: 0;
+
+  animation: progressAppear 0.5s ease 2.4s forwards;
+}
+
+.splash-progress__bar {
+  width: 0;
+  height: 100%;
+
+  background: rgba(255, 255, 255, 0.85);
+
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+
+  animation: progressRun 1.7s ease 2.5s forwards;
+}
+
+/* =========================================================
+   Animations
+   ========================================================= */
+
+@keyframes lightOne {
+  0% {
+    opacity: 0;
+    transform: translateX(-55vw) rotate(28deg);
+  }
+
+  25% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(55vw) rotate(28deg);
+  }
+}
+
+@keyframes lightTwo {
+  0% {
+    opacity: 0;
+    transform: translateX(55vw) rotate(-28deg);
+  }
+
+  25% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-55vw) rotate(-28deg);
+  }
+}
+
+@keyframes lightThree {
+  0% {
+    opacity: 0;
+    transform: translateX(-35vw) rotate(8deg);
+  }
+
+  30% {
+    opacity: 0.45;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(35vw) rotate(8deg);
+  }
+}
+
+@keyframes glowPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  35% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  75% {
+    opacity: 0.8;
+    transform: scale(1.15);
+  }
+
+  100% {
+    opacity: 0.35;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes symbolReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-15deg);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.12) rotate(2deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes symbolGlow {
+  from {
+    box-shadow:
+      0 0 10px rgba(255, 255, 255, 0.08),
+      inset 0 0 20px rgba(255, 255, 255, 0.02);
+  }
+
+  to {
+    box-shadow:
+      0 0 35px rgba(255, 255, 255, 0.16),
+      inset 0 0 25px rgba(255, 255, 255, 0.05);
+  }
+}
+
+@keyframes titleReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+    filter: blur(8px);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.04);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes wordReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes taglineReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes progressAppear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes progressRun {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes splashExit {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.03);
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+/* ---------------------------------------------------------
+   Mobile
+   --------------------------------------------------------- */
+
+@media (max-width: 600px) {
+  .splash-symbol {
+    width: 62px;
+    height: 62px;
+    border-radius: 16px;
+  }
+
+  .splash-symbol span {
+    font-size: 32px;
+  }
+
+  .splash-title {
+    font-size: 46px;
+    letter-spacing: -2px;
+  }
+
+  .splash-tagline {
+    padding: 0 20px;
+    line-height: 1.5;
+  }
+
+  .splash-progress {
+    bottom: 28px;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .splash-screen,
+  .splash-light,
+  .splash-glow,
+  .splash-symbol,
+  .splash-title,
+  .splash-title span,
+  .splash-tagline,
+  .splash-progress,
+  .splash-progress__bar {
+    animation: none !important;
+  }
+
+  .splash-screen {
+    opacity: 1;
+  }
+
+  .splash-symbol,
+  .splash-title,
+  .splash-title span,
+  .splash-tagline,
+  .splash-progress {
+    opacity: 1;
+    transform: none;
+  }
+
+  .splash-progress__bar {
+    width: 100%;
+  }
+}

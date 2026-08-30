@@ -1,0 +1,198 @@
+   1|function Analysis({ result, onRetake, onBackHome, backLabel }) {
+   2|
+   3|  const [filter, setFilter] = useState('all');   // all | correct | incorrect | unattempted | marked
+   4|  const [subject, setSubject] = useState('all'); // all | Physics | Chemistry | Mathematics
+   5|  const [showSummary, setShowSummary] = useState(false);
+   6|  const [view, setView] = useState('performance'); // 'performance' | 'time'
+   7|
+   8|  if (!result) {
+   9|    return (
+  10|      <div className="exam-page">
+  11|        <h1>Analysis unavailable</h1>
+  12|        <button className="btn-primary" onClick={onRetake}>Back to tests</button>
+  13|      </div>
+  14|    );
+  15|  }
+  16|
+  17|  const navTabs = (
+  18|    <div className="ta-nav" role="tablist">
+  19|      <button
+  20|        role="tab"
+  21|        className={`ta-nav__tab${view === 'performance' ? ' ta-nav__tab--active' : ''}`}
+  22|        onClick={() => { setShowSummary(false); setView('performance'); }}
+  23|      >
+  24|        Performance Analysis
+  25|      </button>
+  26|      <button
+  27|        role="tab"
+  28|        className={`ta-nav__tab${view === 'time' ? ' ta-nav__tab--active' : ''}`}
+  29|        onClick={() => { setShowSummary(false); setView('time'); }}
+  30|      >
+  31|        Time Analysis
+  32|      </button>
+  33|    </div>
+  34|  );
+  35|
+  36|  if (showSummary) {
+  37|    return (
+  38|      <>
+  39|        {navTabs}
+  40|        <ScoreSummary
+  41|          result={result}
+  42|          onBack={() => setShowSummary(false)}
+  43|          onBackHome={onBackHome}
+  44|        />
+  45|      </>
+  46|    );
+  47|  }
+  48|
+  49|  if (view === 'time') {
+  50|    return (
+  51|      <>
+  52|        {navTabs}
+  53|        <TimeAnalysis result={result} onBack={() => setView('performance')} />
+  54|      </>
+  55|    );
+  56|  }
+  57|
+  58|  const o = result.overall;
+  59|  const pct = o.max_marks > 0 ? ((o.total_marks / o.max_marks) * 100).toFixed(1) : '0.0';
+  60|  const accuracy = o.correct + o.incorrect > 0
+  61|    ? ((o.correct / (o.correct + o.incorrect)) * 100).toFixed(1)
+  62|    : '0.0';
+  63|
+  64|  const totalTime = result.questions.reduce((sum, q) => sum + (Number(q.time_spent_seconds) || 0), 0);
+  65|  const avgTime = result.questions.length > 0 ? totalTime / result.questions.length : 0;
+  66|
+  67|  const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
+  68|
+  69|  // Questions inside the selected subject (or all subjects).
+  70|  const subjectQuestions = subject === 'all'
+  71|    ? result.questions
+  72|    : result.questions.filter((q) => q.section === subject);
+  73|
+  74|  // Combined subject + answer-status filter.
+  75|  const filtered = subjectQuestions.filter((q) => {
+  76|    if (filter === 'correct') return q.is_correct;
+  77|    if (filter === 'incorrect') return q.is_correct === false && q.marks_awarded < 0;
+  78|    if (filter === 'unattempted') return q.marks_awarded === 0;
+  79|    if (filter === 'marked') return q.status === 'marked_for_review';
+  80|    return true;
+  81|  });
+  82|
+  83|  // Status counts scoped to the currently selected subject (drives the tabs).
+  84|  const counts = {
+  85|    all: subjectQuestions.length,
+  86|    correct: subjectQuestions.filter((q) => q.is_correct).length,
+  87|    incorrect: subjectQuestions.filter((q) => q.is_correct === false && q.marks_awarded < 0).length,
+  88|    unattempted: subjectQuestions.filter((q) => q.marks_awarded === 0).length,
+  89|    marked: subjectQuestions.filter((q) => q.status === 'marked_for_review').length,
+  90|  };
+  91|
+  92|  return (
+  93|
+  94|    <div className="analysis-page">
+  95|      {navTabs}
+  96|      <header className="analysis-header">
+  97|        <button className="btn-ghost analysis-home-button" onClick={onBackHome}>Back to Home</button>
+  98|        <h1>Test Score Summary</h1>
+  99|        <p className="muted">{result.title} | Submitted {new Date(result.submitted_at).toLocaleString()}</p>
+ 100|        <button className="btn-primary analysis-boundaries-button" onClick={() => setShowSummary(true)}>
+ 101|          Let&apos;s Do Analysis
+ 102|        </button>
+ 103|      </header>
+ 104|
+ 105|      <section className="score-hero">
+ 106|        <div className="score-hero__score">
+ 107|          <span className="score-hero__value">{o.total_marks}</span>
+ 108|          <span className="score-hero__max">/ {o.max_marks} marks</span>
+ 109|        </div>
+ 110|        <div className="score-hero__stats">
+ 111|          <div className="stat-chip stat-chip--correct">Correct: {o.correct}</div>
+ 112|          <div className="stat-chip stat-chip--incorrect">Incorrect: {o.incorrect}</div>
+ 113|          <div className="stat-chip stat-chip--unattempted">Unattempted: {o.unattempted}</div>
+ 114|          <div className="stat-chip stat-chip--neutral">Accuracy: {accuracy}%</div>
+ 115|          <div className="stat-chip stat-chip--neutral">Score: {pct}%</div>
+ 116|          <div className="stat-chip stat-chip--neutral" title={`Average ${formatDuration(avgTime)} per question`}>
+ 117|            Time used: {formatDuration(totalTime)}
+ 118|          </div>
+ 119|        </div>
+ 120|      </section>
+ 121|
+ 122|      <section className="review-section">
+ 123|        <div className="review-head">
+ 124|          <h2>Question-wise Review</h2>
+ 125|          <div className="review-toolbar">
+ 126|            <div className="review-toolbar__group">
+ 127|              <span className="review-toolbar__label">Subject</span>
+ 128|              <div className="subject-tabs">
+ 129|                <button
+ 130|                  className={`subject-tab${subject === 'all' ? ' subject-tab--active' : ''}`}
+ 131|                  onClick={() => setSubject('all')}
+ 132|                >
+ 133|                  All Subjects
+ 134|                </button>
+ 135|                {SUBJECTS.map((s) => (
+ 136|                  <button
+ 137|                    key={s}
+ 138|                    className={`subject-tab${subject === s ? ' subject-tab--active' : ''}`}
+ 139|                    style={subject === s
+ 140|                      ? { background: SUBJECT_COLORS[s], borderColor: SUBJECT_COLORS[s], color: '#fff' }
+ 141|                      : undefined}
+ 142|                    onClick={() => setSubject(s)}
+ 143|                  >
+ 144|                    {s}
+ 145|                  </button>
+ 146|                ))}
+ 147|              </div>
+ 148|            </div>
+ 149|            <div className="review-toolbar__group">
+ 150|              <span className="review-toolbar__label">Status</span>
+ 151|              <div className="filter-tabs">
+ 152|                {Object.entries(counts).map(([key, n]) => (
+ 153|                  <button
+ 154|                    key={key}
+ 155|                    className={`filter-tab${filter === key ? ' filter-tab--active' : ''}`}
+ 156|                    onClick={() => setFilter(key)}
+ 157|                  >
+ 158|                    {key[0].toUpperCase() + key.slice(1)} ({n})
+ 159|                  </button>
+ 160|                ))}
+ 161|              </div>
+ 162|            </div>
+ 163|          </div>
+ 164|        </div>
+ 165|
+ 166|        <p className="review-count">
+ 167|          Showing {filtered.length} of {subjectQuestions.length} question{subjectQuestions.length === 1 ? '' : 's'}
+ 168|          {subject !== 'all' ? ` in ${subject}` : ' across all subjects'}
+ 169|          {filter !== 'all' ? ` (${filter})` : ''}
+ 170|        </p>
+ 171|
+ 172|        {filtered.length === 0 && (
+ 173|          <div className="review-empty">
+ 174|            <p className="muted">No {filter !== 'all' || subject !== 'all' ? 'matching ' : ''}questions in this view.</p>
+ 175|            <button className="btn-ghost" onClick={() => { setFilter('all'); setSubject('all'); }}>
+ 176|              Clear Filters
+ 177|            </button>
+ 178|          </div>
+ 179|        )}
+ 180|
+ 181|        <div className="review-list">
+ 182|          {filtered.map((q) => (
+ 183|            <ReviewItem key={q.id} q={q} />
+ 184|          ))}
+ 185|        </div>
+ 186|      </section>
+ 187|
+ 188|      <div className="analysis-actions">
+ 189|        <button className="btn-primary" onClick={onRetake}>{backLabel || 'Take Another Test'}</button>
+ 190|      </div>
+ 191|    </div>
+ 192|  );
+ 193|}
+ 194|
+ 195|// ---------------------------------------------------------------------------
+ 196|// ScoreSummary - one-page test score report (opened from the analysis header).
+ 197|// ---------------------------------------------------------------------------
+ 198|

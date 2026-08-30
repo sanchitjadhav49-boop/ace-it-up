@@ -1,0 +1,217 @@
+/* =========================================================
+   AceIT Up Splash Screen
+   ========================================================= */
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #050505;
+  overflow: hidden;
+
+  opacity: 1;
+  transform: scale(1);
+
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* Subtle light behind the logo */
+.splash-screen::before {
+  content: "";
+  position: absolute;
+
+  width: 420px;
+  height: 420px;
+
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.025) 35%,
+    transparent 70%
+  );
+
+  animation: splashGlow 3s ease-in-out infinite alternate;
+}
+
+/* Main content */
+.splash-content {
+  position: relative;
+  z-index: 2;
+
+  text-align: center;
+
+  animation: splashContentIn 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* AceIT Up */
+.splash-logo {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-weight: 800;
+  letter-spacing: -2px;
+
+  transform: scale(0.92);
+  opacity: 0;
+
+  animation:
+    logoReveal 1.6s cubic-bezier(0.22, 1, 0.36, 1)
+    0.25s forwards;
+}
+
+/* AceIT */
+.logo-word {
+  color: #ffffff;
+  font-size: clamp(52px, 10vw, 92px);
+}
+
+/* Up */
+.logo-up {
+  color: #e50914;
+  font-size: clamp(52px, 10vw, 92px);
+
+  text-shadow:
+    0 0 25px rgba(229, 9, 20, 0.25);
+}
+
+/* Tagline */
+.splash-tagline {
+  margin-top: 22px;
+
+  color: rgba(255, 255, 255, 0.68);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: clamp(13px, 2vw, 18px);
+  letter-spacing: 2px;
+
+  opacity: 0;
+  transform: translateY(12px);
+
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+.splash-tagline--show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
+   Exit animation
+   ========================================================= */
+
+.splash-screen--exit {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* =========================================================
+   Animations
+   ========================================================= */
+
+@keyframes logoReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.65);
+    filter: blur(12px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: scale(1.04);
+    filter: blur(0);
+  }
+
+  75% {
+    transform: scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes splashContentIn {
+  from {
+    transform: translateY(20px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes splashGlow {
+  from {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+
+  to {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .splash-logo {
+    gap: 7px;
+    letter-spacing: -1px;
+  }
+
+  .splash-tagline {
+    margin-top: 16px;
+    padding: 0 20px;
+    letter-spacing: 1.2px;
+  }
+
+  .splash-screen::before {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* Respect reduced-motion accessibility preference */
+@media (prefers-reduced-motion: reduce) {
+  .splash-screen,
+  .splash-content,
+  .splash-logo,
+  .splash-screen::before {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .splash-logo,
+  .splash-tagline {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,6 @@
+node_modules/
+node-v22.23.2-win-x64/
+frontend/node_modules/
+frontend/dist/
+.env
+pg-binaries.zip

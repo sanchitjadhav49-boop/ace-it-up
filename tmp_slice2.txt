@@ -1,0 +1,61 @@
+640:             <h2 className="test-list-title">Available Tests</h2>
+641:             <div className="test-list">
+642:               {tests.length === 0 && <p className="muted">No published tests available.</p>}
+643:               {tests.length > 0 && filteredTests.length === 0 && (
+644:                 <p className="muted">No tests match "{searchQuery}".</p>
+645:               )}
+646:               {filteredTests.map((t) => (
+647:                 <TestCard
+648:                   key={t.id}
+649:                   test={t}
+650:                   userId={userId}
+651:                   onStart={(resumeId) => {
+652:                     setPendingTest(t);
+653:                     setPendingResumeId(resumeId);
+654:                     setPhase('instructions');
+655:                   }}
+656:                 />
+657:               ))}
+658:             </div>
+659: 
+660:           </main>
+661:         </div>
+662:       </div>
+663:     );
+664:   }
+665: 
+666:   // ============================== HISTORY =================================
+667:   if (phase === 'history') {
+668:     return (
+669:       <HistoryPage
+670:         attempts={historyData}
+671:         loading={historyLoading}
+672:         error={historyError}
+673:         selectedTestId={historyView.testId}
+674:         result={resultData}
+675:         resultLoading={resultLoading}
+676:         resultError={resultError}
+677:         onBack={() => { setResultData(null); setResultError(''); setPhase('start'); }}
+678:         onSelectTest={(testId) => setHistoryView({ testId })}
+679:         onBackToTestsList={() => { setResultData(null); setResultError(''); }}
+680:         onViewAnalysis={(attemptId) => openResult(attemptId)}
+681:         onResume={(testId, attemptId) => {
+682:           const t = tests.find((x) => asId(x.id) === asId(testId));
+683:           if (!t) { setPhase('start'); return; }
+684:           setPendingTest(t);
+685:           setPendingResumeId(attemptId);
+686:           setPhase('instructions');
+687:         }}
+688:       />
+689:     );
+690:   }
+691: 
+692:   // ============================ INSTRUCTIONS ==============================
+693: if (phase === 'instructions' && pendingTest) {
+694:   return (
+695:     <div className="instructions-page">
+696:       <div className="instructions-card">
+697:         <h1>{pendingTest.title}</h1>
+698:         <p>Read the instructions carefully before starting the test.</p>
+699: 
+700:         <h2>Exam Instructions</h2>

@@ -1,0 +1,907 @@
+{
+  "title": "JEE Main 2026 Easy Mock A (Full Length)",
+  "description": "Easy mix: 60% easy, 30% moderate, 10% slightly tough. NCERT Class 11-12 syllabus. 20 MCQ + 5 Numerical per subject. MCQ +4/-1, Numerical +4/0.",
+  "duration_minutes": 180,
+  "sections": [
+    {
+      "name": "Physics",
+      "questions": [
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Kinematics",
+          "body": "A ball is thrown vertically upward with speed 20 m/s. Neglect air resistance. Time to return to launch point (s) is:",
+          "options": [
+            "2 s",
+            "4 s",
+            "6 s",
+            "8 s"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Projectile Motion",
+          "body": "A projectile launched at 45 degrees has initial speed v. Its horizontal and vertical ranges are equal. Which statement is true about its time of flight?",
+          "options": [
+            "Tf = v/g",
+            "Tf = sqrt(2) v/g",
+            "Tf = 2v/g",
+            "Tf independent of v"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Newton's Laws",
+          "body": "A 2 kg block accelerated at 3 m/s^2 on frictionless surface. Net horizontal force is:",
+          "options": [
+            "2 N",
+            "3 N",
+            "6 N",
+            "9 N"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Work Energy",
+          "body": "A mass 1 kg moving at 4 m/s has kinetic energy (J):",
+          "options": [
+            "4",
+            "8",
+            "2",
+            "16"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Momentum",
+          "body": "A 0.2 kg ball moving at 10 m/s hits and sticks to a 0.8 kg stationary ball. Final speed (m/s) is:",
+          "options": [
+            "2",
+            "4",
+            "8",
+            "0.5"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Centre of Mass",
+          "body": "Two particles 1 kg and 3 kg located at x=0 and x=4 respectively; center of mass x coordinate is:",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Rotation",
+          "body": "Moment of inertia of a thin rod length L about centre is proportional to which power of L?",
+          "options": [
+            "L^3",
+            "L^2",
+            "L",
+            "1/L"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "SHM",
+          "body": "A pendulum of length 1 m has period approximately (use g=9.8 m/s^2):",
+          "options": [
+            "1 s",
+            "2 s",
+            "3.14 s",
+            "0.5 s"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Waves",
+          "body": "Wave speed on a stretched string increases if the tension is:",
+          "options": [
+            "Increased",
+            "Decreased",
+            "Unchanged",
+            "Inversely changed"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Thermodynamics",
+          "body": "For an ideal gas in an isothermal process, the change in internal energy is:",
+          "options": [
+            "Positive",
+            "Negative",
+            "Zero",
+            "Depends on path"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Heat Transfer",
+          "body": "Two identical rods at 100 C and 0 C are joined. Temperature at midpoint after long time (steady state) is:",
+          "options": [
+            "50 C",
+            "75 C",
+            "25 C",
+            "0 C"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Electrostatics",
+          "body": "Coulomb force between two charges becomes quadruple if distance is halved. True or False?",
+          "options": [
+            "True",
+            "False",
+            "Only for opposite charges",
+            "Only for like charges"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Capacitance",
+          "body": "Capacitance of a parallel plate capacitor increases if the plate area is increased. True or False?",
+          "options": [
+            "True",
+            "False",
+            "Only if separation decreases",
+            "Only if dielectric inserted"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Current Electricity",
+          "body": "Two resistors R and 2R in series across V. Potential drop across the resistor R is:",
+          "options": [
+            "V/3",
+            "2V/3",
+            "V/2",
+            "V"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Magnetism",
+          "body": "Magnetic force on a moving charge is zero when velocity is parallel to magnetic field. Is this statement true?",
+          "options": [
+            "Yes",
+            "No",
+            "Only if charge is zero",
+            "Only if speed is zero"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "EMI",
+          "body": "Induced emf in a loop is maximum when the rate of change of magnetic flux is:",
+          "options": [
+            "Maximum",
+            "Minimum",
+            "Zero",
+            "Negative"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Optics",
+          "body": "A convex lens forms a virtual image if the object is placed closer than the focal length. True or False?",
+          "options": [
+            "True",
+            "False",
+            "Only for concave lens",
+            "Only for mirrors"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Photoelectric",
+          "body": "If incident light frequency equals threshold frequency, increasing intensity changes the emission current how?",
+          "options": [
+            "No emission occurs",
+            "Emission current increases",
+            "Saturation current doubles",
+            "Stopping potential increases"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Semiconductors",
+          "body": "Doping silicon with phosphorus produces which type?",
+          "options": [
+            "n-type",
+            "p-type",
+            "Intrinsic",
+            "Insulator"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Misc",
+          "body": "Placeholder physics MCQ to reach 20 MCQs",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Kinematics",
+          "body": "A car accelerates uniformly from rest to 20 m/s in 10 s. Distance covered (m).",
+          "answer": 100
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Energy",
+          "body": "Kinetic energy of a 2 kg mass moving at 3 m/s (J).",
+          "answer": 9
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "Projectile",
+          "body": "A projectile is launched at 30 degrees with speed 20 m/s. Time of flight (s). Use g=10 m/s^2.",
+          "answer": 2
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Electricity",
+          "body": "Charge 2 C moves through potential difference 5 V. Work done (J).",
+          "answer": 10
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "Oscillations",
+          "body": "Simple pendulum length 0.25 m. Period (s) approx using g=9.8. Round to nearest integer.",
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "name": "Chemistry",
+      "questions": [
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Atomic Structure",
+          "body": "The maximum number of electrons in n=3 shell is:",
+          "options": [
+            "8",
+            "18",
+            "32",
+            "2"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Periodic Table",
+          "body": "Element with electronic configuration [Ne] 3s1 belongs to group:",
+          "options": [
+            "1",
+            "2",
+            "13",
+            "18"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Chemical Bonding",
+          "body": "Which hybridization corresponds to trigonal planar geometry?",
+          "options": [
+            "sp",
+            "sp2",
+            "sp3",
+            "dsp2"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Stoichiometry",
+          "body": "Number of moles in 44 g of CO2 (M=44) is:",
+          "options": [
+            "0.5",
+            "1",
+            "2",
+            "4"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "States of Matter",
+          "body": "Boyle's law states at constant T: PV = constant. True or False?",
+          "options": [
+            "True",
+            "False",
+            "Only ideal gases",
+            "Only real gases"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Thermochemistry",
+          "body": "If a reaction is endothermic, the enthalpy change (Delta H) is:",
+          "options": [
+            "Negative",
+            "Positive",
+            "Zero",
+            "Depends on temperature"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Acids and Bases",
+          "body": "pH of 0.01 M HCl is:",
+          "options": [
+            "2",
+            "1",
+            "3",
+            "4"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Redox",
+          "body": "Oxidation is defined as:",
+          "options": [
+            "Loss of electrons",
+            "Gain of electrons",
+            "Gain of protons",
+            "Loss of mass"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Chemical Kinetics",
+          "body": "For a first order reaction, the half-life is independent of initial concentration. True or False?",
+          "options": [
+            "True",
+            "False",
+            "Only for zero order",
+            "Only for second order"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Organic Basics",
+          "body": "General formula of alkanes is:",
+          "options": [
+            "CnH2n+2",
+            "CnH2n",
+            "CnH2n-2",
+            "CnHn"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Alcohols",
+          "body": "Primary alcohol on mild oxidation yields which product?",
+          "options": [
+            "Aldehyde",
+            "Ketone",
+            "Carboxylic acid",
+            "Alkene"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Isomerism",
+          "body": "Optical isomers are non-superimposable mirror images. True or False?",
+          "options": [
+            "True",
+            "False",
+            "Only for achiral",
+            "Only for meso"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Metals",
+          "body": "Sodium reacts with water to produce which gas?",
+          "options": [
+            "H2",
+            "O2",
+            "Cl2",
+            "N2"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Electrochemistry",
+          "body": "A negative standard potential for Zn2+/Zn implies which?",
+          "options": [
+            "Zn oxidizes easily",
+            "Zn resists oxidation",
+            "Zn is inert",
+            "Zn is noble"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "GOC",
+          "body": "Benzene undergoes electrophilic substitution rather than addition because of:",
+          "options": [
+            "Aromatic stabilization",
+            "High reactivity",
+            "Lack of pi electrons",
+            "High polarity"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Polymers",
+          "body": "Addition polymerization differs from condensation polymerization in that addition polymerization typically does not produce which?",
+          "options": [
+            "Small molecules as byproducts",
+            "High molecular weight polymers",
+            "Repeating units",
+            "Chain growth"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Biomolecules",
+          "body": "DNA nucleotides are made of sugar, phosphate and which component?",
+          "options": [
+            "Amino acids",
+            "Nitrogenous bases",
+            "Fatty acids",
+            "Glycerol"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Environmental Chemistry",
+          "body": "Biodegradable plastics primarily decompose by:",
+          "options": [
+            "Microbial action",
+            "Heat only",
+            "UV only",
+            "Not decomposable"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Aromaticity",
+          "body": "Which compound is aromatic: cyclobutadiene or benzene?",
+          "options": [
+            "Benzene",
+            "Cyclobutadiene",
+            "Both",
+            "None"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Organic Tests",
+          "body": "Which functional group gives Tollen's silver mirror test?",
+          "options": [
+            "Aldehyde",
+            "Ketone",
+            "Alcohol",
+            "Ether"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Mole concept",
+          "body": "Number of moles in 22.4 L at STP (approximately).",
+          "answer": 1
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Stoichiometry",
+          "body": "Mass of 2 moles of H2O (M=18) in grams.",
+          "answer": 36
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "pH",
+          "body": "pH of 0.001 M HCl is:",
+          "answer": 3
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Ideal gas",
+          "body": "At STP, approximate molar volume in liters.",
+          "answer": 22.4
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "Colligative",
+          "body": "Freezing point depression Delta Tf for 1 mol non-electrolyte in 1 kg water (Kf=1.86) is:",
+          "answer": 1.86
+        }
+      ]
+    },
+    {
+      "name": "Mathematics",
+      "questions": [
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Algebra",
+          "body": "If x=2, value of x^2+3x+1 is:",
+          "options": [
+            "11",
+            "7",
+            "5",
+            "15"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Quadratic",
+          "body": "Roots of x^2-5x+6=0 are:",
+          "options": [
+            "2 and 3",
+            "-2 and -3",
+            "1 and 6",
+            "-1 and -6"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Progressions",
+          "body": "Sum of first 5 terms of AP 2,5,8,... is:",
+          "options": [
+            "35",
+            "25",
+            "40",
+            "30"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Trigonometry",
+          "body": "sin 30 degrees equals:",
+          "options": [
+            "1/2",
+            "sqrt(2)/2",
+            "sqrt(3)/2",
+            "1"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Coordinate Geometry",
+          "body": "Distance between (0,0) and (3,4) is:",
+          "options": [
+            "5",
+            "7",
+            "3",
+            "4"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Differentiation",
+          "body": "Derivative of x^2 at x=3 is:",
+          "options": [
+            "3",
+            "6",
+            "9",
+            "12"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Integration",
+          "body": "Integral from 0 to 1 of 2x dx equals:",
+          "options": [
+            "1",
+            "2",
+            "0",
+            "0.5"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Vectors",
+          "body": "Dot product of (1,2) and (3,4) is:",
+          "options": [
+            "11",
+            "7",
+            "10",
+            "14"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Matrices",
+          "body": "Identity matrix 2x2 multiplied by any matrix A leaves A unchanged. True or False?",
+          "options": [
+            "True",
+            "False",
+            "Only for diagonal A",
+            "Only for invertible A"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Probability",
+          "body": "Probability of head in a fair coin toss is:",
+          "options": [
+            "1/2",
+            "1/3",
+            "1/4",
+            "1"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Logarithms",
+          "body": "If log10 a = 2 then a equals:",
+          "options": [
+            "100",
+            "10",
+            "2",
+            "20"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Set Theory",
+          "body": "Number of subsets of {1,2,3} is:",
+          "options": [
+            "8",
+            "6",
+            "3",
+            "4"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Permutation",
+          "body": "Number of ways to arrange 3 letters from A,B,C is:",
+          "options": [
+            "6",
+            "3",
+            "9",
+            "12"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Complex Numbers",
+          "body": "If z=3+4i, magnitude |z| equals:",
+          "options": [
+            "5",
+            "7",
+            "1",
+            "25"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Trigonometric value",
+          "body": "tan 45 degrees equals:",
+          "options": [
+            "1",
+            "0",
+            "infty",
+            "sqrt(3)"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Conics",
+          "body": "For circle x^2+y^2=25, radius is:",
+          "options": [
+            "5",
+            "25",
+            "sqrt(25)",
+            "0"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Sequences",
+          "body": "Sum of first n natural numbers is n(n+1)/2. True or False?",
+          "options": [
+            "True",
+            "False",
+            "Only for even n",
+            "Only for odd n"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Limits",
+          "body": "lim as x->0 of sin x / x is:",
+          "options": [
+            "1",
+            "0",
+            "infty",
+            "Undefined"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Probability",
+          "body": "Single roll of a fair die: probability of odd outcome is:",
+          "options": [
+            "1/2",
+            "1/3",
+            "2/3",
+            "1/6"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Misc",
+          "body": "Placeholder maths MCQ to reach 20 MCQs",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Algebra",
+          "body": "Value of 2^3 (integer).",
+          "answer": 8
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Geometry",
+          "body": "Area of triangle with base 4 and height 3 (square units).",
+          "answer": 6
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "Calculus",
+          "body": "Derivative at x=1 of f(x)=x^2 is: ",
+          "answer": 2
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Arithmetic",
+          "body": "LCM of 6 and 8 is:",
+          "answer": 24
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "Trigonometry",
+          "body": "cos 60 degrees equals:",
+          "answer": 0.5
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+start: 51133 end: 60669
+   1|function Analysis({ result, onRetake, onBackHome, backLabel }) {
+   2|    // --- Time Analysis: time spent grouped by subject, difficulty, result ---
+   3|  const timeAnalysis = useMemo(() => {
+   4|    const bySubject = {};
+   5|    const byDifficulty = {};
+   6|    const byResult = { correct: 0, incorrect: 0, unattempted: 0 };
+   7|
+   8|    for (const q of result.questions) {
+   9|      const t = Number(q.time_spent_seconds) || 0;
+  10|      const subj = q.section || 'Unknown';
+  11|      const diff = q.difficulty || 'easy';
+  12|
+  13|      bySubject[subj] = (bySubject[subj] || 0) + t;
+  14|      byDifficulty[diff] = (byDifficulty[diff] || 0) + t;
+  15|
+  16|      let key;
+  17|      if (q.selected_option_id == null && q.numerical_answer == null) key = 'unattempted';
+  18|      else if (q.is_correct) key = 'correct';
+  19|      else key = 'incorrect';
+  20|      byResult[key] += t;
+  21|    }
+  22|
+  23|    return { bySubject, byDifficulty, byResult };
+  24|  }, [result.questions]);
+  25|  const [filter, setFilter] = useState('all');   // all | correct | incorrect | unattempted | marked
+  26|  const [subject, setSubject] = useState('all'); // all | Physics | Chemistry | Mathematics
+  27|  const [showSummary, setShowSummary] = useState(false);
+  28|  const [showTimeAnalysis, setShowTimeAnalysis] = useState(false);
+  29|
+  30|  if (!result) {
+  31|    return (
+  32|      <div className="exam-page">
+  33|        <h1>Analysis unavailable</h1>
+  34|        <button className="btn-primary" onClick={onRetake}>Back to tests</button>
+  35|      </div>
+  36|    );
+  37|  }
+  38|
+  39|  if (showTimeAnalysis) {
+  40|    return (
+  41|      <TimeAnalysis result={result} onBack={() => setShowTimeAnalysis(false)} />
+  42|    );
+  43|  }
+  44|
+  45|  if (showSummary) {
+  46|    return (
+  47|      <ScoreSummary
+  48|        result={result}
+  49|        onBack={() => setShowSummary(false)}
+  50|        onBackHome={onBackHome}
+  51|      />
+  52|    );
+  53|  }
+  54|
+  55|  const o = result.overall;
+  56|  const pct = o.max_marks > 0 ? ((o.total_marks / o.max_marks) * 100).toFixed(1) : '0.0';
+  57|  const accuracy = o.correct + o.incorrect > 0
+  58|    ? ((o.correct / (o.correct + o.incorrect)) * 100).toFixed(1)
+  59|    : '0.0';
+  60|
+  61|  const totalTime = result.questions.reduce((sum, q) => sum + (Number(q.time_spent_seconds) || 0), 0);
+  62|  const avgTime = result.questions.length > 0 ? totalTime / result.questions.length : 0;
+  63|
+  64|  const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
+  65|
+  66|  // Questions inside the selected subject (or all subjects).
+  67|  const subjectQuestions = subject === 'all'
+  68|    ? result.questions
+  69|    : result.questions.filter((q) => q.section === subject);
+  70|
+  71|  // Combined subject + answer-status filter.
+  72|  const filtered = subjectQuestions.filter((q) => {
+  73|    if (filter === 'correct') return q.is_correct;
+  74|    if (filter === 'incorrect') return q.is_correct === false && q.marks_awarded < 0;
+  75|    if (filter === 'unattempted') return q.marks_awarded === 0;
+  76|    if (filter === 'marked') return q.status === 'marked_for_review';
+  77|    return true;
+  78|  });
+  79|
+  80|  // Status counts scoped to the currently selected subject (drives the tabs).
+  81|  const counts = {
+  82|    all: subjectQuestions.length,
+  83|    correct: subjectQuestions.filter((q) => q.is_correct).length,
+  84|    incorrect: subjectQuestions.filter((q) => q.is_correct === false && q.marks_awarded < 0).length,
+  85|    unattempted: subjectQuestions.filter((q) => q.marks_awarded === 0).length,
+  86|    marked: subjectQuestions.filter((q) => q.status === 'marked_for_review').length,
+  87|  };
+  88|
+  89|  return (
+  90|
+  91|    <div className="analysis-page">
+  92|      <header className="analysis-header">
+  93|        <button className="btn-ghost analysis-home-button" onClick={onBackHome}>Back to Home</button>
+  94|        <h1>Test Score Summary</h1>
+  95|                <section style={{ marginTop: 24 }}>
+  96|          <h2>Time Analysis</h2>
+  97|          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+  98|
+  99|            <div style={{ flex: '1 1 200px', border: '1px solid #b9c2ce', borderRadius: 8, padding: 16 }}>
+ 100|              <h3 style={{ marginTop: 0 }}>By Subject</h3>
+ 101|              {Object.entries(timeAnalysis.bySubject).map(([subj, secs]) => (
+ 102|                <p key={subj} style={{ margin: '4px 0' }}>{subj}: <strong>{secs}s</strong></p>
+ 103|              ))}
+ 104|            </div>
+ 105|
+ 106|            <div style={{ flex: '1 1 200px', border: '1px solid #b9c2ce', borderRadius: 8, padding: 16 }}>
+ 107|              <h3 style={{ marginTop: 0 }}>By Difficulty</h3>
+ 108|              {Object.entries(timeAnalysis.byDifficulty).map(([diff, secs]) => (
+ 109|                <p key={diff} style={{ margin: '4px 0' }}>{diff}: <strong>{secs}s</strong></p>
+ 110|              ))}
+ 111|            </div>
+ 112|
+ 113|            <div style={{ flex: '1 1 200px', border: '1px solid #b9c2ce', borderRadius: 8, padding: 16 }}>
+ 114|              <h3 style={{ marginTop: 0 }}>By Result</h3>
+ 115|              <p style={{ margin: '4px 0' }}>Correct: <strong>{timeAnalysis.byResult.correct}s</strong></p>
+ 116|              <p style={{ margin: '4px 0' }}>Incorrect: <strong>{timeAnalysis.byResult.incorrect}s</strong></p>
+ 117|              <p style={{ margin: '4px 0' }}>Unattempted: <strong>{timeAnalysis.byResult.unattempted}s</strong></p>
+ 118|            </div>
+ 119|
+ 120|          </div>
+ 121|        </section>
+ 122|        <p className="muted">{result.title} | Submitted {new Date(result.submitted_at).toLocaleString()}</p>
+ 123|        <button className="btn-primary analysis-boundaries-button" onClick={() => setShowSummary(true)}>
+ 124|          Let&apos;s Do Analysis
+ 125|        </button>
+ 126|        <button className="btn-time-analysis" onClick={() => setShowTimeAnalysis(true)}>
+ 127|          Time Analysis
+ 128|        </button>
+ 129|      </header>
+ 130|
+ 131|      <section className="score-hero">
+ 132|        <div className="score-hero__score">
+ 133|          <span className="score-hero__value">{o.total_marks}</span>
+ 134|          <span className="score-hero__max">/ {o.max_marks} marks</span>
+ 135|        </div>
+ 136|        <div className="score-hero__stats">
+ 137|          <div className="stat-chip stat-chip--correct">Correct: {o.correct}</div>
+ 138|          <div className="stat-chip stat-chip--incorrect">Incorrect: {o.incorrect}</div>
+ 139|          <div className="stat-chip stat-chip--unattempted">Unattempted: {o.unattempted}</div>
+ 140|          <div className="stat-chip stat-chip--neutral">Accuracy: {accuracy}%</div>
+ 141|          <div className="stat-chip stat-chip--neutral">Score: {pct}%</div>
+ 142|          <div className="stat-chip stat-chip--neutral" title={`Average ${formatDuration(avgTime)} per question`}>
+ 143|            Time used: {formatDuration(totalTime)}
+ 144|          </div>
+ 145|        </div>
+ 146|      </section>
+ 147|
+ 148|      <section className="review-section">
+ 149|        <div className="review-head">
+ 150|          <h2>Question-wise Review</h2>
+ 151|          <div className="review-toolbar">
+ 152|            <div className="review-toolbar__group">
+ 153|              <span className="review-toolbar__label">Subject</span>
+ 154|              <div className="subject-tabs">
+ 155|                <button
+ 156|                  className={`subject-tab${subject === 'all' ? ' subject-tab--active' : ''}`}
+ 157|                  onClick={() => setSubject('all')}
+ 158|                >
+ 159|                  All Subjects
+ 160|                </button>
+ 161|                {SUBJECTS.map((s) => (
+ 162|                  <button
+ 163|                    key={s}
+ 164|                    className={`subject-tab${subject === s ? ' subject-tab--active' : ''}`}
+ 165|                    style={subject === s
+ 166|                      ? { background: SUBJECT_COLORS[s], borderColor: SUBJECT_COLORS[s], color: '#fff' }
+ 167|                      : undefined}
+ 168|                    onClick={() => setSubject(s)}
+ 169|                  >
+ 170|                    {s}
+ 171|                  </button>
+ 172|                ))}
+ 173|              </div>
+ 174|            </div>
+ 175|            <div className="review-toolbar__group">
+ 176|              <span className="review-toolbar__label">Status</span>
+ 177|              <div className="filter-tabs">
+ 178|                {Object.entries(counts).map(([key, n]) => (
+ 179|                  <button
+ 180|                    key={key}
+ 181|                    className={`filter-tab${filter === key ? ' filter-tab--active' : ''}`}
+ 182|                    onClick={() => setFilter(key)}
+ 183|                  >
+ 184|                    {key[0].toUpperCase() + key.slice(1)} ({n})
+ 185|                  </button>
+ 186|                ))}
+ 187|              </div>
+ 188|            </div>
+ 189|          </div>
+ 190|        </div>
+ 191|
+ 192|        <p className="review-count">
+ 193|          Showing {filtered.length} of {subjectQuestions.length} question{subjectQuestions.length === 1 ? '' : 's'}
+ 194|          {subject !== 'all' ? ` in ${subject}` : ' across all subjects'}
+ 195|          {filter !== 'all' ? ` (${filter})` : ''}
+ 196|        </p>
+ 197|
+ 198|        {filtered.length === 0 && (
+ 199|          <div className="review-empty">
+ 200|            <p className="muted">No {filter !== 'all' || subject !== 'all' ? 'matching ' : ''}questions in this view.</p>
+ 201|            <button className="btn-ghost" onClick={() => { setFilter('all'); setSubject('all'); }}>
+ 202|              Clear Filters
+ 203|            </button>
+ 204|          </div>
+ 205|        )}
+ 206|
+ 207|        <div className="review-list">
+ 208|          {filtered.map((q) => (
+ 209|            <ReviewItem key={q.id} q={q} />
+ 210|          ))}
+ 211|        </div>
+ 212|      </section>
+ 213|
+ 214|      <div className="analysis-actions">
+ 215|        <button className="btn-primary" onClick={onRetake}>{backLabel || 'Take Another Test'}</button>
+ 216|      </div>
+ 217|    </div>
+ 218|  );
+ 219|}
+ 220|
+ 221|// ---------------------------------------------------------------------------
+ 222|// ScoreSummary - one-page test score report (opened from the analysis header).
+ 223|// ---------------------------------------------------------------------------
+ 224|

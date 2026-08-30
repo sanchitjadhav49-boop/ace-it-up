@@ -1,0 +1,130 @@
+1: 'use strict';
+2: 
+3: const express = require('express');
+4: const { Pool } = require('pg');
+5: const bcrypt = require('bcryptjs');
+6: 
+7: const app = express();
+8: app.use(express.json());
+9: 
+10: // ---------------------------------------------------------------------
+11: // SIGNUP ? create a new student account
+12: // ---------------------------------------------------------------------
+13: app.post('/api/signup', async (req, res) => {
+14:   try {
+15:     const { email, full_name, password } = req.body;
+16:     if (!email || !full_name || !password) {
+17:       throw new ApiError(400, 'email, full_name and password are required');
+18:     }
+19: 
+20:     const password_hash = await bcrypt.hash(password, 10);
+21: 
+22:     const result = await pool.query(
+23:       `INSERT INTO users (email, full_name, password_hash)
+24:        VALUES ($1, $2, $3)
+25:        RETURNING id, email, full_name`,
+26:       [email, full_name, password_hash]
+27:     );
+28: 
+29:     res.json({ user: result.rows[0] });
+30:   } catch (err) {
+31:     if (err.code === '23505') {
+32:       // duplicate email
+33:       return res.status(400).json({ error: 'An account with this email already exists' });
+34:     }
+35:     res.status(err.status || 500).json({ error: err.message });
+36:   }
+37: });
+38: 
+39: // ---------------------------------------------------------------------
+40: // LOGIN ? check email + password
+41: // ---------------------------------------------------------------------
+42: app.post('/api/login', async (req, res) => {
+43:   try {
+44:     const { email, password } = req.body;
+45:     if (!email || !password) {
+46:       throw new ApiError(400, 'email and password are required');
+47:     }
+48: 
+49:     const result = await pool.query(
+50:       `SELECT id, email, full_name, password_hash FROM users WHERE email = $1`,
+51:       [email]
+52:     );
+53:     const user = result.rows[0];
+54: 
+55:     if (!user || !user.password_hash) {
+56:       return res.status(401).json({ error: 'Invalid email or password' });
+57:     }
+58: 
+59:     const matches = await bcrypt.compare(password, user.password_hash);
+60:     if (!matches) {
+61:       return res.status(401).json({ error: 'Invalid email or password' });
+62:     }
+63: 
+64:     res.json({
+65:       user: { id: user.id, email: user.email, full_name: user.full_name }
+66:     });
+67:   } catch (err) {
+68:     res.status(err.status || 500).json({ error: err.message });
+69:   }
+70: });
+71: // ---------------------------------------------------------------------
+72: // ATTEMPT HISTORY ? get all past attempts for a student
+73: // ---------------------------------------------------------------------
+74: app.get('/api/users/:userId/attempts', async (req, res) => {
+75:   try {
+76:     const { userId } = req.params;
+77:     const result = await pool.query(
+78:       `SELECT a.id, a.test_id, a.status, a.started_at, a.submitted_at, a.total_marks,
+79:               t.title AS test_title, t.duration_minutes,
+80:               (SELECT COALESCE(SUM(q.positive_marks), 0)
+81:                  FROM questions q
+82:                  JOIN sections s ON s.id = q.section_id
+83:                 WHERE s.test_id = a.test_id) AS max_marks
+84:        FROM attempts a
+85:        JOIN tests t ON t.id = a.test_id
+86:        WHERE a.user_id = $1
+87:        ORDER BY a.started_at DESC`,
+88:       [userId]
+89:     );
+90:     res.json({ attempts: result.rows });
+91:   } catch (err) {
+92:     res.status(err.status || 500).json({ error: err.message });
+93:   }
+94: });
+95: 
+96: // ---------------------------------------------------------------------------
+97: // PostgreSQL connection
+98: //   Configure via DATABASE_URL, e.g. postgres://user:pass@host:5432/aceitup
+99: // ---------------------------------------------------------------------------
+100: const pool = new Pool({
+101:   connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/aceitup',
+102: });
+103: 
+104: // ---------------------------------------------------------------------------
+105: // Small helper for HTTP errors with a status code
+106: // ---------------------------------------------------------------------------
+107: class ApiError extends Error {
+108:   constructor(status, message) {
+109:     super(message);
+110:     this.status = status;
+111:   }
+112: }
+113: 
+114: // Per-question status values understood by the API (drives the exam palette):
+115: //   not_visited        - never opened
+116: //   visited            - opened, no answer saved (JEE palette: "Not Answered")
+117: //   answered           - has an answer
+118: //   marked_for_review  - flagged; may or may not carry an answer
+119: const ANSWER_STATUSES = ['answered', 'marked_for_review', 'not_visited', 'visited'];
+120: 
+121: const PAGE_QUESTIONS_COLS =
+122:   'q.id, q.section_id, q.question_type, q.body, q.formula, ' +
+123:   'q.positive_marks, q.negative_marks, q.position, q.difficulty';
+124: 
+125: // ---------------------------------------------------------------------------
+126: // GET /tests  ? list available (published) tests
+127: // ---------------------------------------------------------------------------
+128: app.get('/tests', async (req, res, next) => {
+129:   try {
+130:     const { rows } = await pool.query(

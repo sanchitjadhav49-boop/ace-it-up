@@ -1,0 +1,171 @@
+530:     setPhase('start');
+531:   };
+532: 
+533:   // -------------------------------------------------------------------------
+534:   // Rendering
+535:   // -------------------------------------------------------------------------
+536:     if (showSplash) {
+537:     return <SplashScreen />;
+538:   }
+539:   if (phase === 'loading') {
+540:     return <div className="exam-page"><p className="muted">Loading...</p></div>;
+541:   }
+542: 
+543:   if (!user) {
+544:     return (
+545:       <div style={{ maxWidth: 400, margin: '80px auto', padding: 24, border: '1px solid #b9c2ce', borderRadius: 8 }}>
+546:         <h2>{authMode === 'login' ? 'Log In' : 'Sign Up'}</h2>
+547:         <form onSubmit={handleAuthSubmit}>
+548:           {authMode === 'signup' && (
+549:             <div style={{ marginBottom: 12 }}>
+550:               <label>Full Name</label><br />
+551:               <input type="text" value={authForm.full_name} onChange={(e) => setAuthForm({ ...authForm, full_name: e.target.value })} style={{ width: '100%', padding: 8 }} required />
+552:             </div>
+553:           )}
+554:           <div style={{ marginBottom: 12 }}>
+555:             <label>Email</label><br />
+556:             <input type="email" value={authForm.email} onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })} style={{ width: '100%', padding: 8 }} required />
+557:           </div>
+558:           <div style={{ marginBottom: 12 }}>
+559:             <label>Password</label><br />
+560:             <input type="password" value={authForm.password} onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })} style={{ width: '100%', padding: 8 }} required />
+561:           </div>
+562:           {authError && <p style={{ color: '#c62828' }}>{authError}</p>}
+563:           <button type="submit" className="btn-primary" style={{ width: '100%' }}>
+564:             {authMode === 'login' ? 'Log In' : 'Sign Up'}
+565:           </button>
+566:         </form>
+567:         <p style={{ marginTop: 12, textAlign: 'center' }}>
+568:           {authMode === 'login' ? "Don't have an account? " : "Already have an account? "}
+569:           <a href="#" onClick={(e) => { e.preventDefault(); setAuthMode(authMode === 'login' ? 'signup' : 'login'); setAuthError(''); }}>
+570:             {authMode === 'login' ? 'Sign Up' : 'Log In'}
+571:           </a>
+572:         </p>
+573:       </div>
+574:     );
+575:   }
+576:   
+577:   if (phase === 'error') {
+578:     return (
+579:       <div className="exam-page">
+580:         <h1>Something went wrong</h1>
+581:         <p className="error">{error}</p>
+582:         <button className="btn-primary" onClick={backToTests}>Back to tests</button>
+583:       </div>
+584:     );
+585:   }
+586: 
+587:   // ============================= START SCREEN ==============================
+588:   if (phase === 'start') {
+589:     return (
+590:       <div className="app-shell">
+591:         <aside className="sidebar">
+592:           <div className="sidebar__brand">
+593:             <span className="sidebar__logo">A</span>
+594:             <h1>Ace It Up</h1>
+595:           </div>
+596:           <nav className="sidebar__nav">
+597:             <button className="sidebar__link sidebar__link--active">🏠 Home</button>
+598:             <button className="sidebar__link" onClick={openHistory}>🕘 My History</button>
+599:             <button className="sidebar__link" onClick={() => setDarkMode((v) => !v)}>
+600:               {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+601:             </button>
+602:           </nav>
+603:           <div className="sidebar__footer">
+604:             <button className="sidebar__link sidebar__link--logout" onClick={handleLogout}>🚪 Logout</button>
+605:           </div>
+606:         </aside>
+607: 
+608:         <div className="app-main">
+609:           <header className="topbar">
+610:             <div className="topbar__search">
+611:                             <input
+612:                 type="text"
+613:                 placeholder="Search tests..."
+614:                 value={searchQuery}
+615:                 onChange={(e) => setSearchQuery(e.target.value)}
+616:               />
+617:               {searchQuery && (
+618:                 <button className="topbar__search-clear" onClick={() => setSearchQuery('')} title="Clear search">×</button>
+619:               )}
+620:             </div>
+621:             <button className="avatar-btn" onClick={() => setShowProfileMenu((v) => !v)}>
+622:               {user?.full_name ? user.full_name.charAt(0).toUpperCase() : '?'}
+623:             </button>
+624:             {showProfileMenu && (
+625:               <div className="profile-menu">
+626:                 <div className="profile-menu__name">{user?.full_name}</div>
+627:                 <div className="profile-menu__email">{user?.email}</div>
+628:                 <button onClick={() => { setShowProfileMenu(false); openHistory(); }}>My History</button>
+629:                 <button onClick={() => setDarkMode((v) => !v)}>
+630:                   {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+631:                 </button>
+632:                 <button onClick={handleLogout}>Logout</button>
+633:               </div>
+634:             )}
+635:           </header>
+636: 
+637:           <main className="content-area">
+638:             <p className="hero-tagline">Let's go beyond rote learning.</p>
+639: 
+640:             <h2 className="test-list-title">Available Tests</h2>
+641:             <div className="test-list">
+642:               {tests.length === 0 && <p className="muted">No published tests available.</p>}
+643:               {tests.length > 0 && filteredTests.length === 0 && (
+644:                 <p className="muted">No tests match "{searchQuery}".</p>
+645:               )}
+646:               {filteredTests.map((t) => (
+647:                 <TestCard
+648:                   key={t.id}
+649:                   test={t}
+650:                   userId={userId}
+651:                   onStart={(resumeId) => {
+652:                     setPendingTest(t);
+653:                     setPendingResumeId(resumeId);
+654:                     setPhase('instructions');
+655:                   }}
+656:                 />
+657:               ))}
+658:             </div>
+659: 
+660:           </main>
+661:         </div>
+662:       </div>
+663:     );
+664:   }
+665: 
+666:   // ============================== HISTORY =================================
+667:   if (phase === 'history') {
+668:     return (
+669:       <HistoryPage
+670:         attempts={historyData}
+671:         loading={historyLoading}
+672:         error={historyError}
+673:         selectedTestId={historyView.testId}
+674:         result={resultData}
+675:         resultLoading={resultLoading}
+676:         resultError={resultError}
+677:         onBack={() => { setResultData(null); setResultError(''); setPhase('start'); }}
+678:         onSelectTest={(testId) => setHistoryView({ testId })}
+679:         onBackToTestsList={() => { setResultData(null); setResultError(''); }}
+680:         onViewAnalysis={(attemptId) => openResult(attemptId)}
+681:         onResume={(testId, attemptId) => {
+682:           const t = tests.find((x) => asId(x.id) === asId(testId));
+683:           if (!t) { setPhase('start'); return; }
+684:           setPendingTest(t);
+685:           setPendingResumeId(attemptId);
+686:           setPhase('instructions');
+687:         }}
+688:       />
+689:     );
+690:   }
+691: 
+692:   // ============================ INSTRUCTIONS ==============================
+693: if (phase === 'instructions' && pendingTest) {
+694:   return (
+695:     <div className="instructions-page">
+696:       <div className="instructions-card">
+697:         <h1>{pendingTest.title}</h1>
+698:         <p>Read the instructions carefully before starting the test.</p>
+699: 
+700:         <h2>Exam Instructions</h2>

@@ -1,0 +1,907 @@
+{
+  "title": "JEE Main 2026 Difficult Mock A (Full Length)",
+  "description": "Difficult mix: ~10% easy, ~30% moderate, ~60% difficult. NCERT Class 11-12 syllabus. 20 MCQ + 5 Numerical per subject. MCQ +4/-1, Numerical +4/0.",
+  "duration_minutes": 180,
+  "sections": [
+    {
+      "name": "Physics",
+      "questions": [
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Kinematics (Relative motion)",
+          "body": "A boat crosses a 200 m wide river flowing at 3 m/s by always pointing its bow directly across (perpendicular to the banks). In still water the boat can do 5 m/s. Time to cross and downstream drift are respectively:",
+          "options": [
+            "40 s, 120 m",
+            "50 s, 150 m",
+            "40 s, 80 m",
+            "50 s, 100 m"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Projectile on inclined plane",
+          "body": "A projectile is fired from the foot of a smooth incline of angle 30 deg with speed u at an angle 60 deg to the horizontal. Range measured along the plane is:",
+          "options": [
+            "u^2/(g)",
+            "u^2/(2g)",
+            "(u^2/g) * (sin 60 deg cos 30 deg)/(cos^2 30 deg)",
+            "(u^2/g) * (sin 60 deg)/(1+sin 30 deg)"
+          ],
+          "answer_index": 3
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "NLM + Friction + Pulley",
+          "body": "Blocks A (m) on table (mu = 0.3) and B (m) hanging are connected by light string over a smooth pulley. Minimum m_B/m_A so that the system just starts moving is:",
+          "options": [
+            "0.3",
+            "> 0.3 due to pulley inertia",
+            "0.3/(1-0.3)",
+            "(mu)/(1)"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Work-Energy with variable force",
+          "body": "A particle moves along x under F(x) = kx/(1+x^2). If it starts from rest at x=0, speed at x=1 (mass m) is:",
+          "options": [
+            "sqrt(2k/m)",
+            "sqrt(k/m)",
+            "sqrt{(k/m) ln 2}",
+            "sqrt{(k/m) (1 - 1/sqrt 2)}"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Center of Mass + Collision",
+          "body": "A bullet (m) moving with speed v embeds into the end of a uniform rod (mass M, length L) hinged at the other end and initially at rest in horizontal plane (no gravity torque). Immediately after impact, angular speed is:",
+          "options": [
+            "mvL/(I_rod)",
+            "6mv/(ML)",
+            "(3mv)/(2(ML/3))",
+            "(3mv)/(ML)"
+          ],
+          "answer_index": 3
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Rotation + Rolling constraint",
+          "body": "A uniform cylinder (mass m, radius R) is pulled by a horizontal force F applied at its top edge on a rough horizontal surface (no slipping). The linear acceleration is:",
+          "options": [
+            "(2F)/(3m)",
+            "F/(m)",
+            "(F)/(m(1+I/(mR^2)))",
+            "(4F)/(3m)"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Coupled SHM + Energy",
+          "body": "Two identical springs (k each) in series support a mass m vertically. The mass is pulled down A and released. The maximum speed is:",
+          "options": [
+            "A sqrt(k/m)",
+            "A sqrt(k/(2m))",
+            "A sqrt(2k/m)",
+            "A sqrt(k/(4m))"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Waves + Doppler + Beats",
+          "body": "A source S emits f0. An observer O moves towards a reflecting wall with speed v. The beat frequency heard due to direct and reflected waves (speed of sound c) is:",
+          "options": [
+            "(2f0 v)/c",
+            "(f0 v)/c",
+            "(2f0 v)/(c-v)",
+            "(f0 v)/(c-v)"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Thermodynamics PV-graph",
+          "body": "One mole ideal monoatomic gas undergoes A->B (isobaric doubling volume), B->C (adiabatic to initial volume), C->A (isochoric). The cycle is:",
+          "options": [
+            "Clockwise; net work positive",
+            "Anticlockwise; net work negative",
+            "Zero work",
+            "Direction depends on gamma"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Kinetic theory + Mixing",
+          "body": "Two equal moles of ideal monoatomic gases at T1 and T2 are mixed adiabatically in an insulated container. Final temperature Tf equals:",
+          "options": [
+            "(T1+T2)/2",
+            "sqrt(T1 T2)",
+            "(T1+T2+2sqrt(T1 T2))/4",
+            "Depends on heat capacities"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Electrostatics (continuous charge)",
+          "body": "A uniformly charged thin rod of length 2a has linear density lambda. Electric field magnitude at a point on its perpendicular bisector at distance x (x>>a) is approximately:",
+          "options": [
+            "(1/(4pi e0)) * (2lambda a)/(x^2)",
+            "(1/(4pi e0)) * (lambda 2a)/(x)",
+            "Zero by symmetry",
+            "(1/(4pi e0)) * (lambda 2a x)/(a^2)"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Capacitance + Dielectric insertion",
+          "body": "Two identical capacitors C are in parallel, charged to V, disconnected from battery, then a dielectric of K is fully inserted into one. Final potential difference across the combination is:",
+          "options": [
+            "V",
+            "2V/(1+K)",
+            "KV/(1+K)",
+            "V/(1+K)"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Circuits + Thevenin",
+          "body": "In a Wheatstone bridge with arms R, 2R, 3R, x (in order), find x so bridge is balanced when a cell with internal resistance r is connected across one diagonal and galvanometer across other:",
+          "options": [
+            "x = 6R",
+            "x = 3R",
+            "x = 2R",
+            "Independent of r: x = 6R"
+          ],
+          "answer_index": 3
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Magnetism + Crossed E and B",
+          "body": "A charged particle with charge q and mass m enters region with E along +y and B along +z, with initial velocity along +x. For v = E/B, trajectory is:",
+          "options": [
+            "Straight line along x",
+            "Helix",
+            "Cycloid",
+            "Parabola in xy"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "EMI + AC (RLC)",
+          "body": "In a series RLC, R=50 ohm, L=0.5 H, C=50 uF. Driving emf E=200 sin(omega t). At resonance, the average power is:",
+          "options": [
+            "E_rms^2/R",
+            "E0^2/R",
+            "(1/2) E0^2/R",
+            "Zero"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Ray optics (thick lens effect)",
+          "body": "A plano-convex lens of radius R and refractive index mu is placed with plane face on a glass plate (mu_g). Effective focal length in air for paraxial rays is approximately:",
+          "options": [
+            "R/(mu-1)",
+            "R/((mu/mu_g)-1)",
+            "R/(mu_g-1)",
+            "(mu R)/(mu-1)"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Wave optics (YDSE + thin film)",
+          "body": "In YDSE (slit separation d, screen D), a thin film (mu, thickness t) is in front of one slit. Shift of central maximum in terms of beta = lambda D/d is:",
+          "options": [
+            "Delta y = (mu-1) t d/D",
+            "Delta y = (mu-1) t / d",
+            "Delta y = (mu-1) t * D / d",
+            "Delta y = (mu-1) t / lambda * beta"
+          ],
+          "answer_index": 3
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Photoelectric + Stopping potential",
+          "body": "For metal with work function phi, light of frequency f>f0 is incident. If intensity doubles at same f, which changes?",
+          "options": [
+            "Stopping potential doubles",
+            "Saturation current doubles",
+            "Work function decreases",
+            "Threshold frequency increases"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Bohr + Spectra",
+          "body": "For hydrogen-like ion of atomic number Z, frequency of Lyman-alpha is:",
+          "options": [
+            "(3/4) R c Z^2",
+            "(3/16) R c Z^2",
+            "(1/4) R c Z^2",
+            "(5/16) R c Z^2"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Semiconductors (diode circuits)",
+          "body": "Two identical silicon diodes (0.7 V drop each) are in series with a 10 V source and a 1 kOhm resistor. Approx DC current is:",
+          "options": [
+            "9.3 mA",
+            "8.6 mA",
+            "7.2 mA",
+            "10 mA"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Relative motion",
+          "body": "A man swims across a 120 m wide river flowing at 2 m/s. He swims at 6 m/s relative to water perpendicular to flow. Time to cross (s).",
+          "answer": 20
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "Energy + Spring + Friction",
+          "body": "A 0.5 kg block compresses a spring (k=200 N/m) by 0.10 m and is released on a rough horizontal surface (mu=0.2). How far from the compressed position does it stop? Take g=10 m/s^2 (m).",
+          "answer": 0.9
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "Electrostatics + Capacitance",
+          "body": "A parallel plate capacitor with area 0.02 m^2 and separation 2 mm is half-filled with dielectric K=4 (slab of thickness 1 mm). Vacuum elsewhere. Capacitance (in nF). Take e0=8.85e-12.",
+          "answer": 177
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "AC Circuits (resonance)",
+          "body": "Series RLC with R=20 ohm, L=0.2 H, C=? such that resonant frequency is 500 Hz. Value of C (in microfarad).",
+          "answer": 5.06
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "Optics (lens + shift)",
+          "body": "A convex lens f=20 cm forms a sharp image of a needle on a screen 60 cm away from the object. If the screen is moved 5 cm closer to the lens, by how much should the object be moved (cm) to restore sharp focus? (give magnitude)",
+          "answer": 5
+        }
+      ]
+    },
+    {
+      "name": "Chemistry",
+      "questions": [
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Mole concept + Stoichiometry",
+          "body": "Combustion of a hydrocarbon CxHy gives 6.6 g CO2 and 2.7 g H2O. Moles of CO2 : H2O are:",
+          "options": [
+            "0.15 : 0.15",
+            "0.15 : 0.30",
+            "0.30 : 0.15",
+            "0.10 : 0.15"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Thermodynamics (Gibbs)",
+          "body": "For reaction A -> B, Delta H = +50 kJ/mol and Delta S = +150 J/mol K. Above which temperature (K) is reaction spontaneous?",
+          "options": [
+            "T > 150",
+            "T > 333",
+            "T > 500",
+            "T > 100"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Ionic Equilibrium (Buffer)",
+          "body": "A buffer is made by mixing 0.2 mol NH3 and 0.1 mol NH4Cl in 1 L. Given pKb(NH3)=4.75. pH is closest to:",
+          "options": [
+            "9.25",
+            "9.55",
+            "9.05",
+            "8.75"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Electrochemistry (Nernst)",
+          "body": "For the cell Zn|Zn2+(0.10 M)||Cu2+(0.010 M)|Cu at 25 C, Ecell equals (E0=1.10 V).",
+          "options": [
+            "1.10 - (0.0591) log(0.10/0.010)",
+            "1.10 - (0.0591) log(0.010/0.10)",
+            "1.10 + (0.0591) log(10)",
+            "1.10 - (0.0591)/2 log(10)"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Chemical Kinetics (Arrhenius)",
+          "body": "Rate doubles when T rises from 300 K to 310 K. Assuming Arrhenius behavior and constant A, activation energy Ea (in kJ/mol) is about:",
+          "options": [
+            "35",
+            "52",
+            "65",
+            "18"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Solutions (Colligative + van't Hoff)",
+          "body": "0.1 m aqueous solution of Na2SO4 shows 60% dissociation. Relative lowering of vapor pressure equals:",
+          "options": [
+            "0.1",
+            "0.16",
+            "0.22",
+            "0.28"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Surface Chemistry (Adsorption)",
+          "body": "For a gas on a solid obeying Langmuir isotherm, at low pressure the amount adsorbed varies as:",
+          "options": [
+            "P^2",
+            "P",
+            "1/P",
+            "constant"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Coordination (CFSE + spin)",
+          "body": "[Fe(H2O)6]^{2+} is high spin. Number of unpaired electrons and magnetic moment mu (BM) approximately are:",
+          "options": [
+            "4, 4.9",
+            "4, 6.9",
+            "2, 2.8",
+            "5, 5.9"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "p-Block (Oxoacids of P)",
+          "body": "Correct order of acid strength: H3PO2, H3PO3, H3PO4 is:",
+          "options": [
+            "H3PO4 > H3PO3 > H3PO2",
+            "H3PO2 > H3PO3 > H3PO4",
+            "H3PO3 > H3PO4 > H3PO2",
+            "H3PO4 > H3PO2 > H3PO3"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "d-Block (Magnetic moment)",
+          "body": "Which has highest magnetic moment?",
+          "options": [
+            "Mn2+ (d5)",
+            "Fe2+ (d6)",
+            "Co2+ (d7)",
+            "Ni2+ (d8)"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Metallurgy (Ellingham)",
+          "body": "At high T, C reduces ZnO to Zn. Best reason:",
+          "options": [
+            "Delta H negative always",
+            "Delta G of C -> CO becomes more negative with T",
+            "Zn is more reactive",
+            "Entropy of ZnO decreases"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "GOC (Acidity/Basicity + Resonance)",
+          "body": "Arrange acidity: p-nitrophenol (I), phenol (II), p-methylphenol (III)",
+          "options": [
+            "I > II > III",
+            "III > II > I",
+            "II > I > III",
+            "I > III > II"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Hydrocarbons (Mechanism)",
+          "body": "Major product when 3-methyl-1-butene reacts with HBr in presence of peroxide is due to:",
+          "options": [
+            "Markovnikov addition",
+            "Anti-Markovnikov radical addition",
+            "Carbocation rearrangement to tertiary",
+            "Allylic substitution"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Stereochemistry (E/Z, R/S)",
+          "body": "For CH3-CH=CH-CH3, number of stereoisomers and type is:",
+          "options": [
+            "2, E/Z",
+            "2, R/S",
+            "4, E/Z",
+            "None"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Carbonyls (Aldol/Cannizzaro)",
+          "body": "Which gives Cannizzaro in conc base?",
+          "options": [
+            "Benzaldehyde",
+            "Acetaldehyde",
+            "Propanal",
+            "Acetone"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Amines (Diazotization/Reaction)",
+          "body": "Aniline treated with NaNO2/HCl at 0-5 C followed by CuCN gives:",
+          "options": [
+            "Anisole",
+            "Bromobenzene",
+            "Benzonitrile",
+            "Phenol"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Biomolecules (Mutarotation)",
+          "body": "Aqueous glucose shows mutarotation because:",
+          "options": [
+            "Open chain to ring interconversion",
+            "Keto-enol tautomerism",
+            "Racemization",
+            "Hydrolysis"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Polymers",
+          "body": "Nylon-6,6 is formed by condensation of:",
+          "options": [
+            "Adipic acid and hexamethylenediamine",
+            "Caprolactam",
+            "Terephthalic acid and ethylene glycol",
+            "Phenol and formaldehyde"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Environmental (Green chem)",
+          "body": "Select the greener choice:",
+          "options": [
+            "Using catalytic routes over stoichiometric reagents",
+            "Using excess heavy metals",
+            "Using chlorinated solvents",
+            "Maximizing hazardous waste"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Carbonyls (Haloform)",
+          "body": "Which one gives a positive iodoform test under I2/NaOH?",
+          "options": [
+            "3-pentanone",
+            "tert-butanol",
+            "2-butanone",
+            "benzaldehyde"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "Buffer calculation",
+          "body": "pH of buffer with 0.20 M NH3 and 0.10 M NH4Cl at 25 C. pKb = 4.75.",
+          "answer": 9.55
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "Nernst",
+          "body": "For Cu2+ + 2e- -> Cu, E0 = +0.34 V. Find E when [Cu2+] = 1.0e-3 M at 25 C. (V)",
+          "answer": 0.277
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "Kinetics (Arrhenius)",
+          "body": "A first-order reaction has k1 = 2.0e-3 s^-1 at 300 K and k2 = 8.0e-3 s^-1 at 320 K. Find Ea (kJ/mol). Use R=8.314 J/mol K.",
+          "answer": 57.6
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Solubility product",
+          "body": "Ksp of Ag2CrO4 is 1.0e-12. Molar solubility in pure water (M).",
+          "answer": 0.0001
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "Colligative (i factor)",
+          "body": "0.2 mol Na2SO4 is dissolved in 1.0 kg water and shows 80% dissociation. Calculate van't Hoff factor i.",
+          "answer": 2.6
+        }
+      ]
+    },
+    {
+      "name": "Mathematics",
+      "questions": [
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Quadratic + Parameter",
+          "body": "For real t, the equation x^2 - 2tx + t^2 - 1 = 0 has real roots iff:",
+          "options": [
+            "|t| >= 1",
+            "|t| <= 1",
+            "t >= 0",
+            "t <= -1"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Sequences/Series (Telescoping)",
+          "body": "Sum S_n = sum_{k=1}^n 1/(k(k+1)). Then S_n equals:",
+          "options": [
+            "1 - 1/(n+1)",
+            "1/(n+1)",
+            "n/(n+1)",
+            "1 - 1/n"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Binomial + Inequality",
+          "body": "Least n such that (1+1/n)^n > 2.69 is:",
+          "options": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Complex Numbers (Locus)",
+          "body": "If z satisfies |z-1| = |z+3|, the locus is:",
+          "options": [
+            "x = 1",
+            "x = -1",
+            "x = -1",
+            "y = 0"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Inequalities + AM-GM",
+          "body": "For positive a,b with a+b=6, the maximum of a^2 b is:",
+          "options": [
+            "48",
+            "54",
+            "64",
+            "72"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Determinants + System",
+          "body": "For what lambda does the system x+ y+ z=1, x+2y+3z=2, x+2y+lambda z=3 have a unique solution?",
+          "options": [
+            "lambda != 3",
+            "lambda != 1",
+            "lambda != 0",
+            "all lambda"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Limits (Series)",
+          "body": "lim_{x->0} (e^{x} - 1 - x - x^2/2)/x^3 equals:",
+          "options": [
+            "1/6",
+            "1/3",
+            "1/2",
+            "0"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Differentiability (Mod)",
+          "body": "f(x)=|x^2-1|. Which is true?",
+          "options": [
+            "Not differentiable at x= +-1",
+            "Not continuous at x= +-1",
+            "Differentiable everywhere",
+            "Not differentiable at x=0"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Max-Min (Constraint)",
+          "body": "Max of f(x,y)=xy subject to x+2y=12, x,y>=0 is:",
+          "options": [
+            "36",
+            "24",
+            "18",
+            "16"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Definite Integral (Substitution)",
+          "body": "I= integral_0^{pi/2} ln(1+sin x) dx equals:",
+          "options": [
+            "(pi/2) ln 2 - ln 2",
+            "(pi/2) ln 2",
+            "0",
+            "(pi/2) ln(1/2)"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Differential Equation",
+          "body": "dy/dx + y tan x = sin x, y(0)=0. Then y(pi/4) equals:",
+          "options": [
+            "ln 2 / sqrt 2",
+            "(1 - 1/sqrt 2)",
+            "(1/2) ln 2",
+            "1 - 1/2 ln 2"
+          ],
+          "answer_index": 1
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Definite Integral (Property)",
+          "body": "If I = integral_0^{pi} x sin x dx, then I equals:",
+          "options": [
+            "pi",
+            "2",
+            "0",
+            "pi - 2"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Vectors + Geometry",
+          "body": "If a,b are unit vectors with angle theta, then |a - b| equals:",
+          "options": [
+            "2 sin(theta/2)",
+            "2 cos(theta/2)",
+            "sqrt{2(1+cos theta)}",
+            "sqrt{2(1-cos theta)}"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "3D Geometry (Planes)",
+          "body": "The distance between planes x+2y+2z=5 and 2x+4y+4z=7 is:",
+          "options": [
+            "|5-7|/sqrt(1+4+4)",
+            "|5-3.5|/sqrt(1+4+4)",
+            "|5-3.5|/sqrt(1+4+4) with normalized coeffs",
+            "0"
+          ],
+          "answer_index": 3
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Conics (Parabola Tangent)",
+          "body": "Equation of tangent to y^2=4ax making angle theta with x-axis is:",
+          "options": [
+            "y=mx+a/m",
+            "y=mx-2am",
+            "y=mx- a/m",
+            "y=mx+a m"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "moderate",
+          "topic": "Ellipse (Normal)",
+          "body": "For ellipse x^2/9 + y^2/4 =1, slope of normal at (3cos t, 2 sin t) is:",
+          "options": [
+            "(2 tan t)/3",
+            "-(2 tan t)/3",
+            "-(3 tan t)/2",
+            "(3 tan t)/2"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Probability (Binomial)",
+          "body": "If X~Bin(n,1/2), then P(X even) equals:",
+          "options": [
+            "1/2",
+            "(1+ (1-2p)^n)/2",
+            "(1+(1/2)^n)/2",
+            "(1+0^n)/2"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Combinatorics (Restrictions)",
+          "body": "Number of 7-digit numbers from digits 0-9 without repetition and divisible by 5 is:",
+          "options": [
+            "2 * 9 * 8 * 7 * 6 * 5 * 4",
+            "9*8*7*6*5*4",
+            "9*8*7*6*5*2",
+            "9*8*7*6*5*4*1"
+          ],
+          "answer_index": 2
+        },
+        {
+          "type": "mcq",
+          "difficulty": "difficult",
+          "topic": "Bayes/Conditional",
+          "body": "A test detects a disease with 95% sensitivity and 90% specificity. Prevalence is 2%. P(disease | positive) approx is:",
+          "options": [
+            "16%",
+            "50%",
+            "95%",
+            "2%"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "mcq",
+          "difficulty": "easy",
+          "topic": "Vector triple product",
+          "body": "For vectors a,b,c with a x (b x c) equals:",
+          "options": [
+            "(a.c) b - (a.b) c",
+            "(a.b) c - (a.c) b",
+            "(b.c) a - (a.c) b",
+            "(a.c) b + (a.b) c"
+          ],
+          "answer_index": 0
+        },
+        {
+          "type": "numerical",
+          "difficulty": "moderate",
+          "topic": "Definite integral",
+          "body": "Compute integral_0^1 (x/(1+x^2)) dx.",
+          "answer": 0.25
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "Limit (Series)",
+          "body": "lim_{x->0} (tan x - x)/(x^3).",
+          "answer": 0.3333
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "Optimization",
+          "body": "Max value of f(x)=x^3-6x^2+9x on [0,5].",
+          "answer": 5
+        },
+        {
+          "type": "numerical",
+          "difficulty": "easy",
+          "topic": "Probability",
+          "body": "Two fair dice are rolled. Probability that product is a multiple of 3 (give as decimal).",
+          "answer": 0.5556
+        },
+        {
+          "type": "numerical",
+          "difficulty": "difficult",
+          "topic": "Vectors (Shortest distance)",
+          "body": "Shortest distance between lines r=(i+2j)+t(2i-j+k) and r'=(3i-j)+s(i+2j-2k). Give value rounded to 2 decimals.",
+          "answer": 1.73
+        }
+      ]
+    }
+  ]
+}
