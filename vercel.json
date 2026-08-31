@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://ace-it-up-6uas.onrender.com/api/:path*" },
+    { "source": "/attempts/:path*", "destination": "https://ace-it-up-6uas.onrender.com/attempts/:path*" },
+    { "source": "/tests/:path*", "destination": "https://ace-it-up-6uas.onrender.com/tests/:path*" }
+  ]
+}
