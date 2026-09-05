@@ -28,7 +28,7 @@ app.get('/attempts/:id/error-tags', async (req, res, next) => {
 // ---------------------------------------------------------------------------
 // POST /attempts/:id/error-tags  - save error tags for an attempt.
 //   Body: { question_id, error_tag } or { tags: { question_id: error_tag } }.
-//   error_tag must be one of the 8 options (correct + 7 error types).
+//   error_tag must be one of the 9 options (correct + 7 error types + skip).
 // ---------------------------------------------------------------------------
 app.post('/attempts/:id/error-tags', async (req, res, next) => {
   const client = await pool.connect();
@@ -52,7 +52,7 @@ app.post('/attempts/:id/error-tags', async (req, res, next) => {
     if (attemptRes.rows.length === 0) throw new ApiError(404, 'attempt not found');
 
     const saved = {};
-    const VALID = ['correct','concept','silly','reading','application','time','guess','recall'];
+    const VALID = ['correct','concept','silly','reading','application','time','guess','recall','skip'];
     for (const [rawQid, rawTag] of entries) {
       const questionId = Number(rawQid);
       const tag = String(rawTag);

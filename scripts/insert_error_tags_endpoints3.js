@@ -1,3 +1,4 @@
+/* eslint-disable */
 const fs = require('fs');
 const file = 'app.js';
 let s = fs.readFileSync(file, 'utf8');
@@ -26,7 +27,7 @@ const lines = [
   '// ---------------------------------------------------------------------------',
   "// POST /attempts/:id/error-tags  - save error tags for an attempt.",
   "//   Body: { question_id, error_tag } or { tags: { question_id: error_tag } }.",
-  "//   error_tag must be one of the 8 options (correct + 7 error types).",
+  "//   error_tag must be one of the 9 options (correct + 7 error types + skip).",
   '// ---------------------------------------------------------------------------',
   "app.post('/attempts/:id/error-tags', async (req, res, next) => {",
   '  const client = await pool.connect();',
@@ -50,7 +51,7 @@ const lines = [
   "    if (attemptRes.rows.length === 0) throw new ApiError(404, 'attempt not found');",
   '',
   '    const saved = {};',
-  "    const VALID = ['correct','concept','silly','reading','application','time','guess','recall'];",
+  "    const VALID = ['correct','concept','silly','reading','application','time','guess','recall','skip'];",
   '    for (const [rawQid, rawTag] of entries) {',
   '      const questionId = Number(rawQid);',
   '      const tag = String(rawTag);',
@@ -58,7 +59,10 @@ const lines = [
   '      if (!VALID.includes(tag)) {',
   "        throw new ApiError(400, 'error_tag must be one of: ' + VALID.join(', '));",
   '      }',
-  '      const inAttempt = await client.query('SELECT 1 FROM attempt_questions WHERE attempt_id = $1 AND question_id = $2', [attemptId, questionId]);',
+  "      const inAttempt = await client.query(",
+  "        'SELECT 1 FROM attempt_questions WHERE attempt_id = $1 AND question_id = $2',",
+  '        [attemptId, questionId]',
+  '      );',
   '      if (inAttempt.rows.length === 0) {',
   "        throw new ApiError(400, 'question ' + questionId + ' is not part of this attempt');",
   '      }',

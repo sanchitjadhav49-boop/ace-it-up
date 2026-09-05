@@ -40,6 +40,10 @@ function pct(part, total) {
   return Math.round((part / total) * 100);
 }
 
+function questionNumber(question, fallback) {
+  return question.global_position || question.position || fallback;
+}
+
 // ---------------------------------------------------------------------------
 // SVG helpers for the donut chart
 // ---------------------------------------------------------------------------
@@ -226,7 +230,7 @@ function QuestionTable({ questions }) {
 
               return (
                 <tr key={q.id} className="ta-table__row" title={q.body}>
-                  <td className="ta-table__num">{q.position || i + 1}</td>
+                  <td className="ta-table__num">{questionNumber(q, i + 1)}</td>
                   <td>
                     <span className="ta-subject-pill" style={{ background: subjectColor + '18', color: subjectColor, border: `1px solid ${subjectColor}40` }}>
                       {q.section}
@@ -337,7 +341,7 @@ export default function TimeAnalysis({ result, onBack }) {
 
     // Per-question table sorted by question number (Q1 -> QN)
     const questionsSorted = [...result.questions].sort(
-      (a, b) => (Number(a.position) || 0) - (Number(b.position) || 0)
+              (a, b) => questionNumber(a, 0) - questionNumber(b, 0)
     );
 
     // Key insight metrics
@@ -419,7 +423,7 @@ export default function TimeAnalysis({ result, onBack }) {
           <div className="ta-metric-card ta-metric-card--warn">
             <span className="ta-metric-card__value">{formatDuration(slowestQ.time_spent_seconds)}</span>
             <span className="ta-metric-card__label">
-              Slowest: {slowestQ.section} Q{slowestQ.position}
+              Slowest: {slowestQ.section} Q{questionNumber(slowestQ, '?')}
             </span>
           </div>
         )}
@@ -477,7 +481,7 @@ export default function TimeAnalysis({ result, onBack }) {
           {fastestAttemptedQ && (
             <span>
               Your fastest attempted question was {fastestAttemptedQ.section} Q
-              {fastestAttemptedQ.position} at just{' '}
+              {questionNumber(fastestAttemptedQ, '?')} at just{' '}
               <strong>{formatDuration(fastestAttemptedQ.time_spent_seconds)}</strong>.
             </span>
           )}

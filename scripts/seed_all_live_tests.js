@@ -40,19 +40,22 @@ function main() {
     // 1) Seed the five previous-year papers (paper1..paper5) from papers_2026/
     run(process.execPath, [path.join('seed_previous_year_papers.js')]);
 
-    // 2) Seed the three custom JSON tests found in tests/
+    // 2) Seed all custom JSON tests found in tests/
+    // This is intentionally name-agnostic so a file like
+    // custom_moderate_testA.json or custom_moderate_test_A.json is still included.
     const testsDir = path.join(process.cwd(), 'tests');
-    const customFiles = [
-      'custom_easy_test_A.json',
-      'custom_moderate_test_A.json',
-      'custom_difficult_test_A.json'
-    ];
+    const customFiles = fs.existsSync(testsDir)
+      ? fs.readdirSync(testsDir)
+          .filter((fname) => /^custom_.*test.*\.json$/i.test(fname))
+          .sort()
+      : [];
+
+    if (customFiles.length === 0) {
+      console.warn(`Warning: no custom test JSON files found in ${testsDir}`);
+    }
+
     for (const fname of customFiles) {
       const full = path.join(testsDir, fname);
-      if (!fs.existsSync(full)) {
-        console.warn(`Warning: custom test file not found: ${full} — skipping`);
-        continue;
-      }
       run(process.execPath, [path.join('seed_custom_test.js'), full]);
     }
 

@@ -5,7 +5,6 @@ import react from '@vitejs/plugin-react';
 // frontend can call them with relative paths.
 export default defineConfig({
   plugins: [react()],
-  server: { host: true },
   server: {
     host: true,
     port: 5174,

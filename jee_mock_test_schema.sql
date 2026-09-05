@@ -161,7 +161,7 @@ CREATE TABLE attempt_questions (
 -- ---------------------------------------------------------------------------
 -- ERROR TAGS  (student's self-analysis of why a question went wrong)
 --   One row per (attempt, question). The student picks exactly one tag per
---   question after the test: 'correct' or one of the 7 error types.
+--   question after the test: 'correct', one of the 7 error types, or 'skip'.
 --   Powers the Error Distribution tab in the analysis page.
 -- ---------------------------------------------------------------------------
 CREATE TABLE error_tags (
@@ -169,12 +169,29 @@ CREATE TABLE error_tags (
     question_id BIGINT NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
     error_tag   TEXT NOT NULL CHECK (error_tag IN
                   ('correct', 'concept', 'silly', 'reading',
-                   'application', 'time', 'guess', 'recall')),
+                   'application', 'time', 'guess', 'recall', 'skip')),
     updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (attempt_id, question_id)
 );
 
 CREATE INDEX idx_error_tags_attempt ON error_tags (attempt_id);
+-- ---------------------------------------------------------------------------
+-- ATTEMPT_JOURNEY  (navigation events while taking the test)
+--   One row per jump the student makes between questions during an attempt
+--   (from_question_id -> to_question_id at viewed_at). The exam screen posts
+--   these fire-and-forget on every question change; the analysis page reads
+--   them back to render the "Question Journey" timeline.
+-- ---------------------------------------------------------------------------
+CREATE TABLE attempt_journey (
+    id                BIGSERIAL PRIMARY KEY,
+    attempt_id        BIGINT NOT NULL REFERENCES attempts(id) ON DELETE CASCADE,
+    from_question_id  BIGINT NOT NULL,
+    to_question_id    BIGINT NOT NULL,
+    viewed_at         TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_attempt_journey_attempt ON attempt_journey (attempt_id, viewed_at);
+
 
 -- ---------------------------------------------------------------------------
 -- INDEXES

@@ -69,6 +69,7 @@ const ERROR_TYPES = [
   { key: 'time',        label: 'Time pressure',       color: '#0891b2' },
   { key: 'guess',       label: 'Guess',               color: '#db2777' },
   { key: 'recall',      label: 'Recall mistake',      color: '#65a30d' },
+  { key: 'skip',        label: 'Skip',                color: '#6b7280' },
 ];
 
 const CORRECT_KEY = 'correct';
@@ -288,7 +289,7 @@ export default function ErrorDistribution({ result, onBack }) {
     questions.forEach((q, i) => {
       const tag = tagMap[i];
       if (tag === CORRECT_KEY) { correctCount += 1; return; }
-      if (tag && perType[tag]) perType[tag].push(i + 1);
+      if (tag && perType[tag]) perType[tag].push(q.global_position || i + 1);
     });
     const rows = ERROR_TYPES.map((e) => {
       const list = perType[e.key];
@@ -397,7 +398,7 @@ export default function ErrorDistribution({ result, onBack }) {
                     <td className="ed-qnos">
                       {r.questions.length > 0
                         ? r.questions.map((n) => `Q${n}`).join(', ')
-                        : <span className="muted">—</span>}
+                        : <span className="muted">ï¿½</span>}
                     </td>
                   </tr>
                 ))}
@@ -444,9 +445,9 @@ export default function ErrorDistribution({ result, onBack }) {
             key={i}
             className={`ed-palette__cell${tagMap[i] ? ' ed-palette__cell--done' : ''}`}
             onClick={() => jumpTo(i)}
-            title={tagMap[i] ? `Q${i + 1} - tagged` : `Q${i + 1} - not tagged`}
+            title={tagMap[i] ? `Q${q.global_position || i + 1} - tagged` : `Q${q.global_position || i + 1} - not tagged`}
           >
-            {i + 1}
+            {q.global_position || i + 1}
           </button>
         ))}
       </div>
@@ -454,7 +455,7 @@ export default function ErrorDistribution({ result, onBack }) {
       {!allDone && firstUnanswered >= 0 && (
         <div className="ed-hint">
           <button className="btn-ghost" onClick={() => jumpTo(firstUnanswered)}>
-            Jump to first unanswered (Q{firstUnanswered + 1})
+            Jump to first unanswered (Q{questions[firstUnanswered]?.global_position || firstUnanswered + 1})
           </button>
         </div>
       )}
@@ -466,7 +467,7 @@ export default function ErrorDistribution({ result, onBack }) {
           return (
             <div key={q.id} id={`ed-q-${i}`} className={`ed-question${tagMap[i] ? ' ed-question--done' : ''}`}>
               <div className="ed-question__meta">
-                <span className="ed-question__num">Q{i + 1}</span>
+                <span className="ed-question__num">Q{q.global_position || i + 1}</span>
                 <span className="ta-subject-pill" style={{ background: subjectColor + '18', color: subjectColor, border: `1px solid ${subjectColor}40` }}>
                   {q.section}
                 </span>

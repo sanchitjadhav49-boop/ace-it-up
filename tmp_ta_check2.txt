@@ -1,4 +1,0 @@
-BLOCK_START:52471
-"if (showSummary) {\r\n    return (\r\n      <ScoreSummary\r\n        result={result}\r\n        onBack={() => setShowSummary(false)}\r\n        onBackHome={onBackHome}\r\n      />\r\n    );\r\n  }\r\n\r\n  const o = resu"
-BTN_AT:56214
-".byResult.incorrect}s</strong></p>\r\n              <p style={{ margin: '4px 0' }}>Unattempted: <strong>{timeAnalysis.byResult.unattempted}s</strong></p>\r\n            </div>\r\n\r\n          </div>\r\n        </section>\r\n        <p className=\"muted\">{result.title} | Submitted {new Date(result.submitted_at).toLocaleString()}</p>\r\n        <button className=\"btn-primary analysis-boundaries-button\" onClick={() => setShowSummary(true)}>\r\n          Let&apos;s Do Analysis\r\n        </button>\r\n      </header>\r\n\r\n      <section className=\"score-hero\">\r\n        <"
