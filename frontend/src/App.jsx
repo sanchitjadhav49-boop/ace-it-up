@@ -13,6 +13,7 @@ import ErrorDistribution from './ErrorDistribution.jsx';
 import DifficultyAnalysis from './DifficultyAnalysis.jsx';
 import QuestionJourney from './QuestionJourney.jsx';
 import QuestionTypeAnalysis from './QuestionTypeAnalysis.jsx';
+import TopicAnalysis from './TopicAnalysis.jsx';
 
 
 
@@ -34,7 +35,14 @@ async function api(path, options) {
 
   if (!res.ok) {
 
-    const err = new Error(body.error || `Request failed (${res.status})`);
+    // No JSON body means we never reached the API (the Vite dev proxy or the
+    // hosting layer answered instead) - say that, because a bare
+    // "Request failed (500)" is impossible to debug.
+    const message = body.error || (res.status >= 500
+      ? 'Cannot reach the Ace It Up API. Make sure the backend is running on port 3000 (start-app.bat), then reload.'
+      : `Request failed (${res.status})`);
+
+    const err = new Error(message);
 
     err.status = res.status;
 
@@ -2533,514 +2541,782 @@ function optionLetterFor(q, optionId) {
 
 
 
-function Analysis({ result, onRetake, onBackHome, backLabel }) {
-
-
-
-  const [filter, setFilter] = useState('all');   // all | correct | incorrect | unattempted | marked
-
-  const [subject, setSubject] = useState('all'); // all | Physics | Chemistry | Mathematics
-
-  const [showSummary, setShowSummary] = useState(false);
-
-  const [view, setView] = useState('performance'); // 'performance' | 'time' | 'interval' | 'error' | 'difficulty' | 'journey' | 'qtype'
-
-
-
-  if (!result) {
-
-    return (
-
-      <div className="exam-page">
-
-        <h1>Analysis unavailable</h1>
-
-        <button className="btn-primary" onClick={onRetake}>Back to tests</button>
-
-      </div>
-
-    );
-
-  }
-
-
-
-  const navTabs = (
-
-    <div className="ta-nav" role="tablist">
-
-      <button
-
-        role="tab"
-
-        className={`ta-nav__tab${view === 'performance' ? ' ta-nav__tab--active' : ''}`}
-
-        onClick={() => { setShowSummary(false); setView('performance'); }}
-
-      >
-
-        Performance Analysis
-
-      </button>
-
-      <button
-
-        role="tab"
-
-        className={`ta-nav__tab${view === 'time' ? ' ta-nav__tab--active' : ''}`}
-
-        onClick={() => { setShowSummary(false); setView('time'); }}
-
-      >
-
-        Time Analysis
-
-      </button>
-
-      <button
-
-        role="tab"
-
-        className={`ta-nav__tab${view === 'interval' ? ' ta-nav__tab--active' : ''}`}
-
-        onClick={() => { setShowSummary(false); setView('interval'); }}
-
-      >
-
-        Time Intervals
-
-      </button>
-
-      <button
-
-        role="tab"
-
-        className={`ta-nav__tab${view === 'error' ? ' ta-nav__tab--active' : ''}`}
-
-        onClick={() => { setShowSummary(false); setView('error'); }}
-
-      >
-
-        Error Distribution
-
-      </button>
-
-    
-
-      
-
-
-      <button
-        role="tab"
-        className={`ta-nav__tab${view === 'difficulty' ? ' ta-nav__tab--active' : ''}`}
-        onClick={() => { setShowSummary(false); setView('difficulty'); }}
-      >
-        Difficulty Analysis
-      </button>
-      <button
-        role="tab"
-        className={`ta-nav__tab${view === 'journey' ? ' ta-nav__tab--active' : ''}`}
-        onClick={() => { setShowSummary(false); setView('journey'); }}
-      >
-        Question Journey
-      </button>
-      <button
-        role="tab"
-        className={`ta-nav__tab${view === 'qtype' ? ' ta-nav__tab--active' : ''}`}
-        onClick={() => { setShowSummary(false); setView('qtype'); }}
-      >
-        MCQ vs Numerical
-      </button>
-</div>
-
-  );
-
-      
-
-
-
-  if (showSummary) {
-
-    return (
-
-      <>
-
-        {navTabs}
-
-        <ScoreSummary
-
-          result={result}
-
-          onBack={() => setShowSummary(false)}
-
-          onBackHome={onBackHome}
-
-        />
-
-      </>
-
-    );
-
-  }
-
-
-
-  if (view === 'time') {
-
-    return (
-
-      <>
-
-        {navTabs}
-
-        <TimeAnalysis result={result} onBack={() => setView('performance')} />
-
-      </>
-
-    );
-
-  }
-
-  if (view === 'interval') {
-
-    return (
-
-      <>
-
-        {navTabs}
-
-        <TimeIntervalAnalysis result={result} onBack={() => setView('performance')} />
-
-      </>
-
-    );
-
-  }
-
-  if (view === 'error') {
-
-    return (
-
-      <>
-
-        {navTabs}
-
-        <ErrorDistribution result={result} onBack={() => setView('performance')} />
-
-      </>
-
-    );
-
-  }
-
-
-
-  if (view === 'difficulty') {
-
-    return (
-
-      <>
-
-        {navTabs}
-
-        <DifficultyAnalysis result={result} onBack={() => setView('performance')} />
-
-      </>
-
-    );
-
-  }
-    if (view === 'journey') {
-    return (
-      <>
-        {navTabs}
-        <QuestionJourney result={result} onBack={() => setView('performance')} />
-      </>
-    );
-  }
-if (view === 'qtype') {
-    return (
-      <>
-        {navTabs}
-        <QuestionTypeAnalysis result={result} onBack={() => setView('performance')} />
-      </>
-    );
-  }
-
-
-  const o = result.overall;
-
-  const pct = o.max_marks > 0 ? ((o.total_marks / o.max_marks) * 100).toFixed(1) : '0.0';
-
-  const accuracy = o.correct + o.incorrect > 0
-
-    ? ((o.correct / (o.correct + o.incorrect)) * 100).toFixed(1)
-
-    : '0.0';
-
-
-
-  const totalTime = result.questions.reduce((sum, q) => sum + (Number(q.time_spent_seconds) || 0), 0);
-
-  const avgTime = result.questions.length > 0 ? totalTime / result.questions.length : 0;
-
-
-
-  const SUBJECTS = ['Physics', 'Chemistry', 'Mathematics'];
-
-
-
-  // Questions inside the selected subject (or all subjects).
-
-  const subjectQuestions = subject === 'all'
-
-    ? result.questions
-
-    : result.questions.filter((q) => q.section === subject);
-
-
-
-  // Combined subject + answer-status filter.
-
-  const filtered = subjectQuestions.filter((q) => {
-
-    if (filter === 'correct') return q.is_correct;
-
-    if (filter === 'incorrect') return q.is_correct === false && q.marks_awarded < 0;
-
-    if (filter === 'unattempted') return q.marks_awarded === 0;
-
-    if (filter === 'marked') return q.status === 'marked_for_review';
-
-    return true;
-
-  });
-
-
-
-  // Status counts scoped to the currently selected subject (drives the tabs).
-
-  const counts = {
-
-    all: subjectQuestions.length,
-
-    correct: subjectQuestions.filter((q) => q.is_correct).length,
-
-    incorrect: subjectQuestions.filter((q) => q.is_correct === false && q.marks_awarded < 0).length,
-
-    unattempted: subjectQuestions.filter((q) => q.marks_awarded === 0).length,
-
-    marked: subjectQuestions.filter((q) => q.status === 'marked_for_review').length,
-
-  };
-
-
-
+// ---------------------------------------------------------------------------
+// Test Analysis workspace (redesigned Performance Analysis).
+//
+//   The old seven-tab row is replaced by five logical sections, all driven by
+//   the same /attempts/:id/result payload:
+//
+//     Overview  - score / accuracy / attempt KPIs, status strip, attempt
+//                 distribution and plain-English quick insights
+//     Time      - Time Analysis + Time Interval Analysis
+//     Questions - Question-wise review + Question Journey + MCQ vs Numerical
+//     Topics    - Topic Analysis + Difficulty Analysis
+//     Errors    - Error Distribution
+//
+//   Every existing analysis screen is reused untouched (the shell hides only
+//   their duplicated back buttons and footers through CSS).
+// ---------------------------------------------------------------------------
+
+// Small stroke icon set for the redesign (24x24 viewBox, currentColor).
+const TA2_ICON_PATHS = {
+  back: 'M19 12H5M12 19l-7-7 7-7',
+  check: 'M20 6L9 17l-5-5',
+  cross: 'M18 6L6 18M6 6l12 12',
+  minus: 'M5 12h14',
+  bookmark: 'M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z',
+  clock: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2',
+  gauge: 'M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18zM12 14l4.2-4.2',
+  info: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-5M12 8h.01',
+  warn: 'M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01',
+  spark: 'M13 2 3 14h8l-1 8 10-12h-8l1-8z',
+  file: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8',
+  chart: 'M18 20V10M12 20V4M6 20v-6',
+  download: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3',
+  print: 'M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z',
+};
+
+function Ta2Icon({ name }) {
   return (
-
-
-
-    <div className="analysis-page">
-
-      {navTabs}
-
-      <header className="analysis-header">
-
-        <button className="btn-ghost analysis-home-button" onClick={onBackHome}>Back to Home</button>
-
-        <h1>Test Score Summary</h1>
-
-        <p className="muted">{result.title} | Submitted {new Date(result.submitted_at).toLocaleString()}</p>
-
-        <button className="btn-primary analysis-boundaries-button" onClick={() => setShowSummary(true)}>
-
-          Let&apos;s Do Analysis
-
-        </button>
-
-      </header>
-
-
-
-      <section className="score-hero">
-
-        <div className="score-hero__score">
-
-          <span className="score-hero__value">{o.total_marks}</span>
-
-          <span className="score-hero__max">/ {o.max_marks} marks</span>
-
-        </div>
-
-        <div className="score-hero__stats">
-
-          <div className="stat-chip stat-chip--correct">Correct: {o.correct}</div>
-
-          <div className="stat-chip stat-chip--incorrect">Incorrect: {o.incorrect}</div>
-
-          <div className="stat-chip stat-chip--unattempted">Unattempted: {o.unattempted}</div>
-
-          <div className="stat-chip stat-chip--neutral">Accuracy: {accuracy}%</div>
-
-          <div className="stat-chip stat-chip--neutral">Score: {pct}%</div>
-
-          <div className="stat-chip stat-chip--neutral" title={`Average ${formatDuration(avgTime)} per question`}>
-
-            Time used: {formatDuration(totalTime)}
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-
-      <section className="review-section">
-
-        <div className="review-head">
-
-          <h2>Question-wise Review</h2>
-
-          <div className="review-toolbar">
-
-            <div className="review-toolbar__group">
-
-              <span className="review-toolbar__label">Subject</span>
-
-              <div className="subject-tabs">
-
-                <button
-
-                  className={`subject-tab${subject === 'all' ? ' subject-tab--active' : ''}`}
-
-                  onClick={() => setSubject('all')}
-
-                >
-
-                  All Subjects
-
-                </button>
-
-                {SUBJECTS.map((s) => (
-
-                  <button
-
-                    key={s}
-
-                    className={`subject-tab${subject === s ? ' subject-tab--active' : ''}`}
-
-                    style={subject === s
-
-                      ? { background: SUBJECT_COLORS[s], borderColor: SUBJECT_COLORS[s], color: '#fff' }
-
-                      : undefined}
-
-                    onClick={() => setSubject(s)}
-
-                  >
-
-                    {s}
-
-                  </button>
-
-                ))}
-
-              </div>
-
-            </div>
-
-            <div className="review-toolbar__group">
-
-              <span className="review-toolbar__label">Status</span>
-
-              <div className="filter-tabs">
-
-                {Object.entries(counts).map(([key, n]) => (
-
-                  <button
-
-                    key={key}
-
-                    className={`filter-tab${filter === key ? ' filter-tab--active' : ''}`}
-
-                    onClick={() => setFilter(key)}
-
-                  >
-
-                    {key[0].toUpperCase() + key.slice(1)} ({n})
-
-                  </button>
-
-                ))}
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-
-        <p className="review-count">
-
-          Showing {filtered.length} of {subjectQuestions.length} question{subjectQuestions.length === 1 ? '' : 's'}
-
-          {subject !== 'all' ? ` in ${subject}` : ' across all subjects'}
-
-          {filter !== 'all' ? ` (${filter})` : ''}
-
-        </p>
-
-
-
-        {filtered.length === 0 && (
-
-          <div className="review-empty">
-
-            <p className="muted">No {filter !== 'all' || subject !== 'all' ? 'matching ' : ''}questions in this view.</p>
-
-            <button className="btn-ghost" onClick={() => { setFilter('all'); setSubject('all'); }}>
-
-              Clear Filters
-
-            </button>
-
-          </div>
-
-        )}
-
-
-
-        <div className="review-list">
-
-          {filtered.map((q) => (
-
-            <ReviewItem key={q.id} q={q} />
-
-          ))}
-
-        </div>
-
-      </section>
-
-
-
-      <div className="analysis-actions">
-
-        <button className="btn-primary" onClick={onRetake}>{backLabel || 'Take Another Test'}</button>
-
-      </div>
-
-    </div>
-
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d={TA2_ICON_PATHS[name] || TA2_ICON_PATHS.info} />
+    </svg>
   );
-
 }
 
+// "38 sec" / "2 min 5 sec" / "1 hr 2 min" - friendlier wording for the KPI tiles.
+function ta2Duration(totalSeconds) {
+  const t = Math.max(0, Math.round(Number(totalSeconds) || 0));
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = t % 60;
+  if (h > 0) return m > 0 ? `${h} hr ${m} min` : `${h} hr`;
+  if (m > 0) return s > 0 ? `${m} min ${s} sec` : `${m} min`;
+  return `${s} sec`;
+}
 
+// One decimal, but never a trailing ".0" (100% instead of 100.0%).
+function ta2Pct(part, whole) {
+  return whole > 0 ? (part / whole) * 100 : 0;
+}
+
+function ta2Round1(value) {
+  const n = Math.round((Number(value) || 0) * 10) / 10;
+  return Number.isInteger(n) ? String(n) : n.toFixed(1);
+}
+
+// "6 Sep 2026, 5:51 pm" - falls back to the raw string when unparseable.
+function ta2Submitted(value) {
+  const d = new Date(value);
+  if (!value || Number.isNaN(d.getTime())) return String(value || '');
+  return d.toLocaleString(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+// Human label for the paper kind, derived from its section/question make-up.
+function ta2TestKind(result) {
+  const sections = result.sections || [];
+  const names = sections.map((s) => s.name);
+  const total = (result.overall && result.overall.total) || 0;
+  if (sections.length >= 3 && total >= 50) return 'Full Length Test';
+  if (sections.length === 2) return 'Two-Subject Test';
+  if (sections.length === 1) return `${names[0]} Test`;
+  return 'Custom Test';
+}
+
+function ta2Attempted(q) {
+  return q.selected_option_id != null || q.numerical_answer != null;
+}
+
+function ta2Marked(q) {
+  return q.status === 'marked_for_review' || q.status === 'answered_marked';
+}
+
+// Plain-English takeaways shown in the "Quick Insights" card.
+function ta2BuildInsights({
+  o, total, attempted, accuracy, avgAttemptedTime, marked, slowestQuestion,
+}) {
+  const unattempted = Math.max(0, total - attempted);
+  const attemptRate = ta2Pct(attempted, total);
+  const facts = [];
+
+  if (unattempted > 0) {
+    facts.push({
+      tone: 'warn',
+      icon: 'warn',
+      text: `${unattempted} question${unattempted === 1 ? ' was' : 's were'} left unattempted.`,
+    });
+  }
+
+  facts.push({
+    tone: 'info',
+    icon: 'file',
+    text: `You attempted ${attempted} of ${total} question${total === 1 ? '' : 's'} (${ta2Round1(attemptRate)}% of the paper).`,
+  });
+
+  if (attempted === 0) {
+    facts.push({
+      tone: 'warn',
+      icon: 'info',
+      text: 'No question was attempted, so accuracy could not be measured.',
+    });
+  } else {
+    facts.push({
+      tone: accuracy >= 70 ? 'good' : accuracy >= 40 ? 'warn' : 'focus',
+      icon: accuracy >= 70 ? 'check' : 'info',
+      text: `Accuracy is ${ta2Round1(accuracy)}% (${o.correct} correct out of ${attempted} attempted).`,
+    });
+    facts.push({
+      tone: 'time',
+      icon: 'clock',
+      text: `Average time on attempted questions: ${ta2Duration(avgAttemptedTime)}.`,
+    });
+  }
+
+  if (o.incorrect > 0) {
+    facts.push({
+      tone: 'focus',
+      icon: 'cross',
+      text: `${o.incorrect} question${o.incorrect === 1 ? ' was' : 's were'} answered incorrectly - the Errors section shows the pattern.`,
+    });
+  }
+
+  if (marked > 0) {
+    facts.push({
+      tone: 'info',
+      icon: 'bookmark',
+      text: `${marked} question${marked === 1 ? ' was' : 's were'} left marked for review.`,
+    });
+  }
+
+  if (slowestQuestion && Number(slowestQuestion.time_spent_seconds) > 0) {
+    facts.push({
+      tone: 'time',
+      icon: 'clock',
+      text: `Slowest question: ${slowestQuestion.section} Q${questionNumber(slowestQuestion, '?')} at ${ta2Duration(slowestQuestion.time_spent_seconds)}.`,
+    });
+  }
+
+  // Closing piece of advice - tailored to the attempt rate and accuracy.
+  let advice;
+  if (attempted === 0) {
+    advice = {
+      tone: 'focus',
+      icon: 'spark',
+      text: 'Attempt the easier questions first - every unattempted question gives away marks.',
+    };
+  } else if (attemptRate < 70 && accuracy >= 70) {
+    advice = {
+      tone: 'good',
+      icon: 'check',
+      text: 'Accuracy is high, so you can safely attempt more questions next time.',
+    };
+  } else if (attemptRate < 70) {
+    advice = {
+      tone: 'focus',
+      icon: 'spark',
+      text: 'Focus on increasing your attempt rate - aim for at least 70% of the paper.',
+    };
+  } else if (accuracy < 60) {
+    advice = {
+      tone: 'focus',
+      icon: 'warn',
+      text: 'You attempt almost everything - slow down slightly and improve precision.',
+    };
+  } else {
+    advice = {
+      tone: 'good',
+      icon: 'check',
+      text: 'Attempt rate and accuracy are both healthy - keep this balance.',
+    };
+  }
+
+  return facts.slice(0, 5).concat([advice]);
+}
+
+// Attempt-distribution donut (one arc per answer state).
+function Ta2Donut({ segments, total, centerValue, centerLabel }) {
+  const R = 74;
+  const SW = 16;
+  const CIRC = 2 * Math.PI * R;
+  let offset = 0;
+
+  return (
+    <div className="ta2-donut">
+      <svg
+        className="ta2-donut__svg"
+        viewBox="0 0 186 186"
+        role="img"
+        aria-label={`${centerValue} ${centerLabel}`}
+      >
+        <circle className="ta2-donut__track" cx="93" cy="93" r={R} strokeWidth={SW} />
+        {total > 0 && segments.map((s) => {
+          const len = (s.value / total) * CIRC;
+          if (!(len > 0)) return null;
+          const el = (
+            <circle
+              key={s.key}
+              className="ta2-donut__seg"
+              cx="93"
+              cy="93"
+              r={R}
+              stroke={s.color}
+              strokeWidth={SW}
+              strokeDasharray={`${len} ${CIRC - len}`}
+              strokeDashoffset={-offset}
+            >
+              <title>{`${s.label}: ${s.value}`}</title>
+            </circle>
+          );
+          offset += len;
+          return el;
+        })}
+      </svg>
+      <div className="ta2-donut__center">
+        <strong>{centerValue}</strong>
+        <span>{centerLabel}</span>
+      </div>
+    </div>
+  );
+}
+
+// Overview dashboard: KPI tiles, status strip, distribution and insights.
+function Ta2Overview({
+  result, o, total, attempted, accuracy, marked, totalTime, avgAttemptedTime,
+  slowestQuestion, backLabel, onRetake, onOpenSummary,
+}) {
+  const unattempted = Math.max(0, total - attempted);
+  const scorePct = ta2Pct(o.total_marks, o.max_marks);
+  const attemptRate = ta2Pct(attempted, total);
+  const insights = ta2BuildInsights({
+    o, total, attempted, accuracy, avgAttemptedTime, marked, slowestQuestion,
+  });
+
+  const segments = [
+    { key: 'correct', label: 'Correct', value: o.correct, color: '#22c55e' },
+    { key: 'incorrect', label: 'Incorrect', value: o.incorrect, color: '#ef4444' },
+    { key: 'unattempted', label: 'Unattempted', value: unattempted, color: '#cbd5e1' },
+  ];
+
+  return (
+    <div>
+      <div className="ta2-kpis">
+        <div className="ta2-card ta2-kpi">
+          <div className="ta2-kpi__head">
+            <span className="ta2-kpi__icon"><Ta2Icon name="gauge" /></span>
+            Score
+          </div>
+          <div className="ta2-kpi__value">
+            {o.total_marks}
+            <small>/ {o.max_marks}</small>
+          </div>
+          <div className="ta2-bar" title={`${ta2Round1(scorePct)}% of the total marks`}>
+            <span className="ta2-bar__pct">{ta2Round1(scorePct)}%</span>
+            <div className="ta2-bar__fill" style={{ width: `${Math.min(100, Math.max(scorePct, 1.5))}%` }} />
+          </div>
+        </div>
+
+        <div className="ta2-card ta2-kpi">
+          <div className="ta2-kpi__head">
+            <span className="ta2-kpi__icon ta2-kpi__icon--green"><Ta2Icon name="check" /></span>
+            Accuracy
+          </div>
+          <div className="ta2-kpi__value">{ta2Round1(accuracy)}%</div>
+          <div className="ta2-kpi__sub">
+            {o.correct} / {attempted} attempted
+          </div>
+        </div>
+
+        <div className="ta2-card ta2-kpi">
+          <div className="ta2-kpi__head">
+            <span className="ta2-kpi__icon"><Ta2Icon name="file" /></span>
+            Attempted
+          </div>
+          <div className="ta2-kpi__value">
+            {attempted}
+            <small>/ {total}</small>
+          </div>
+          <div className="ta2-kpi__sub">{ta2Round1(attemptRate)}% of the paper</div>
+        </div>
+
+        <div className="ta2-card ta2-kpi">
+          <div className="ta2-kpi__head">
+            <span className="ta2-kpi__icon ta2-kpi__icon--purple"><Ta2Icon name="clock" /></span>
+            Time Used
+          </div>
+          <div className="ta2-kpi__value">{ta2Duration(totalTime)}</div>
+          <div className="ta2-kpi__sub">
+            {attempted > 0
+              ? `avg ${ta2Duration(avgAttemptedTime)} per attempted question`
+              : 'no question attempted'}
+          </div>
+        </div>
+      </div>
+
+      <div className="ta2-status">
+        <div className="ta2-status__card ta2-status--correct">
+          <span className="ta2-status__icon"><Ta2Icon name="check" /></span>
+          <span className="ta2-status__label">Correct</span>
+          <span className="ta2-status__value">{o.correct}</span>
+        </div>
+        <div className="ta2-status__card ta2-status--incorrect">
+          <span className="ta2-status__icon"><Ta2Icon name="cross" /></span>
+          <span className="ta2-status__label">Incorrect</span>
+          <span className="ta2-status__value">{o.incorrect}</span>
+        </div>
+        <div className="ta2-status__card ta2-status--unattempted">
+          <span className="ta2-status__icon"><Ta2Icon name="minus" /></span>
+          <span className="ta2-status__label">Unattempted</span>
+          <span className="ta2-status__value">{unattempted}</span>
+        </div>
+        <div className="ta2-status__card ta2-status--marked">
+          <span className="ta2-status__icon"><Ta2Icon name="bookmark" /></span>
+          <span className="ta2-status__label">Marked</span>
+          <span className="ta2-status__value">{marked}</span>
+        </div>
+      </div>
+
+      <div className="ta2-grid ta2-grid--wide">
+        <div className="ta2-card">
+          <h3 className="ta2-card__title">
+            <Ta2Icon name="chart" />
+            Attempt Distribution
+          </h3>
+          <Ta2Donut
+            segments={segments}
+            total={total}
+            centerValue={`${attempted}/${total}`}
+            centerLabel="attempted"
+          />
+          <div className="ta2-legend">
+            {segments.map((s) => (
+              <div key={s.key} className="ta2-legend__row">
+                <span className="ta2-legend__dot" style={{ background: s.color }} />
+                <span>{s.label}</span>
+                <span className="ta2-legend__count">{s.value}</span>
+                <span className="ta2-legend__pct">({ta2Round1(ta2Pct(s.value, total))}%)</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="ta2-card">
+          <h3 className="ta2-card__title">
+            <Ta2Icon name="spark" />
+            Quick Insights
+          </h3>
+          <ul className="ta2-insights">
+            {insights.map((item, i) => (
+              <li key={i} className={`ta2-insight ta2-insight--${item.tone}`}>
+                <Ta2Icon name={item.icon} />
+                <span>{item.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="ta2-foot">
+        <button className="ta2-btn" onClick={onOpenSummary}>
+          <Ta2Icon name="file" />
+          Full Score Summary
+        </button>
+        <button className="ta2-btn ta2-btn--primary" onClick={onRetake}>
+          <Ta2Icon name="back" />
+          {backLabel || 'Take Another Test'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Question-wise review with the subject + status filters (moved here from the
+// old single-page analysis layout, behaviour unchanged).
+function Ta2ReviewPanel({ result, filter, subject, onFilter, onSubject }) {
+  const subjects = ['Physics', 'Chemistry', 'Mathematics'];
+
+  const subjectQuestions = subject === 'all'
+    ? result.questions
+    : result.questions.filter((q) => q.section === subject);
+
+  const filtered = subjectQuestions.filter((q) => {
+    if (filter === 'correct') return q.is_correct;
+    if (filter === 'incorrect') return q.is_correct === false && q.marks_awarded < 0;
+    if (filter === 'unattempted') return q.marks_awarded === 0;
+    if (filter === 'marked') return ta2Marked(q);
+    return true;
+  });
+
+  const counts = {
+    all: subjectQuestions.length,
+    correct: subjectQuestions.filter((q) => q.is_correct).length,
+    incorrect: subjectQuestions.filter((q) => q.is_correct === false && q.marks_awarded < 0).length,
+    unattempted: subjectQuestions.filter((q) => q.marks_awarded === 0).length,
+    marked: subjectQuestions.filter((q) => ta2Marked(q)).length,
+  };
+
+  return (
+    <div className="ta2-card">
+      <section className="review-section">
+        <div className="review-head">
+          <h2>Question-wise Review</h2>
+          <div className="review-toolbar">
+            <div className="review-toolbar__group">
+              <span className="review-toolbar__label">Subject</span>
+              <div className="subject-tabs">
+                <button
+                  className={`subject-tab${subject === 'all' ? ' subject-tab--active' : ''}`}
+                  onClick={() => onSubject('all')}
+                >
+                  All Subjects
+                </button>
+                {subjects.map((s) => (
+                  <button
+                    key={s}
+                    className={`subject-tab${subject === s ? ' subject-tab--active' : ''}`}
+                    style={subject === s
+                      ? { background: SUBJECT_COLORS[s], borderColor: SUBJECT_COLORS[s], color: '#fff' }
+                      : undefined}
+                    onClick={() => onSubject(s)}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="review-toolbar__group">
+              <span className="review-toolbar__label">Status</span>
+              <div className="filter-tabs">
+                {Object.entries(counts).map(([key, n]) => (
+                  <button
+                    key={key}
+                    className={`filter-tab${filter === key ? ' filter-tab--active' : ''}`}
+                    onClick={() => onFilter(key)}
+                  >
+                    {key[0].toUpperCase() + key.slice(1)} ({n})
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p className="review-count">
+          Showing {filtered.length} of {subjectQuestions.length} question{subjectQuestions.length === 1 ? '' : 's'}
+          {subject !== 'all' ? ` in ${subject}` : ' across all subjects'}
+          {filter !== 'all' ? ` (${filter})` : ''}
+        </p>
+
+        {filtered.length === 0 && (
+          <div className="review-empty">
+            <p className="muted">No {filter !== 'all' || subject !== 'all' ? 'matching ' : ''}questions in this view.</p>
+            <button className="btn-ghost" onClick={() => { onFilter('all'); onSubject('all'); }}>
+              Clear Filters
+            </button>
+          </div>
+        )}
+
+        <div className="review-list">
+          {filtered.map((q) => (
+            <ReviewItem key={q.id} q={q} />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Analysis({ result, onRetake, onBackHome, backLabel }) {
+  const [section, setSection] = useState('overview');   // overview | time | questions | topics | errors
+  const [timeView, setTimeView] = useState('time');     // time | intervals
+  const [questionView, setQuestionView] = useState('review'); // review | journey | qtype
+  const [topicView, setTopicView] = useState('topics'); // topics | difficulty
+  const [showSummary, setShowSummary] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [filter, setFilter] = useState('all');          // all | correct | incorrect | unattempted | marked
+  const [subject, setSubject] = useState('all');        // all | Physics | Chemistry | Mathematics
+
+  // Close the export menu on any outside click.
+  useEffect(() => {
+    if (!exportOpen) return undefined;
+    const close = () => setExportOpen(false);
+    window.addEventListener('click', close);
+    return () => window.removeEventListener('click', close);
+  }, [exportOpen]);
+
+  if (!result) {
+    return (
+      <div className="exam-page">
+        <h1>Analysis unavailable</h1>
+        <button className="btn-primary" onClick={onRetake}>Back to tests</button>
+      </div>
+    );
+  }
+
+  const o = result.overall;
+  const questions = result.questions || [];
+  const total = o.total || questions.length;
+  const attempted = o.correct + o.incorrect;
+  const accuracy = ta2Pct(o.correct, attempted);
+  const unattempted = Math.max(0, total - attempted);
+  const marked = questions.filter((q) => ta2Marked(q)).length;
+  const totalTime = questions.reduce((sum, q) => sum + (Number(q.time_spent_seconds) || 0), 0);
+
+  const attemptedQuestions = questions.filter((q) => ta2Attempted(q));
+  const attemptedTime = attemptedQuestions.reduce((sum, q) => sum + (Number(q.time_spent_seconds) || 0), 0);
+  const avgAttemptedTime = attemptedQuestions.length > 0
+    ? attemptedTime / attemptedQuestions.length
+    : 0;
+
+  const slowestQuestion = questions.reduce((acc, q) => (
+    !acc || Number(q.time_spent_seconds) > Number(acc.time_spent_seconds) ? q : acc
+  ), null);
+
+  const testKind = ta2TestKind(result);
+
+  function openSection(key) {
+    setShowSummary(false);
+    setSection(key);
+  }
+
+  function downloadReport() {
+    try {
+      const payload = { exported_at: new Date().toISOString(), ...result };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `aceitup-attempt-${result.attempt_id}-analysis.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      // Export is a convenience only - never break the page over it.
+    }
+    setExportOpen(false);
+  }
+
+  const sections = [
+    { key: 'overview', label: 'Overview' },
+    { key: 'time', label: 'Time' },
+    { key: 'questions', label: 'Questions' },
+    { key: 'topics', label: 'Topics' },
+    { key: 'errors', label: 'Errors' },
+  ];
+
+  const subTab = (key, label, active, onClick) => (
+    <button
+      key={key}
+      className={`ta2-subnav__btn${active ? ' ta2-subnav__btn--active' : ''}`}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
+
+  let content = null;
+
+  if (showSummary) {
+    content = (
+      <ScoreSummary
+        result={result}
+        onBack={() => setShowSummary(false)}
+        onBackHome={onBackHome}
+      />
+    );
+  } else if (section === 'overview') {
+    content = (
+      <Ta2Overview
+        result={result}
+        o={o}
+        total={total}
+        attempted={attempted}
+        accuracy={accuracy}
+        marked={marked}
+        totalTime={totalTime}
+        avgAttemptedTime={avgAttemptedTime}
+        slowestQuestion={slowestQuestion}
+        backLabel={backLabel}
+        onRetake={onRetake}
+        onOpenSummary={() => setShowSummary(true)}
+      />
+    );
+  } else if (section === 'time') {
+    content = (
+      <div>
+        <div className="ta2-subnav">
+          {subTab('time', 'Time Analysis', timeView === 'time', () => setTimeView('time'))}
+          {subTab('intervals', 'Time Intervals', timeView === 'intervals', () => setTimeView('intervals'))}
+        </div>
+        {timeView === 'time'
+          ? <TimeAnalysis result={result} onBack={() => openSection('overview')} />
+          : <TimeIntervalAnalysis result={result} onBack={() => openSection('overview')} />}
+      </div>
+    );
+  } else if (section === 'questions') {
+    content = (
+      <div>
+        <div className="ta2-subnav">
+          {subTab('review', 'Question-wise Review', questionView === 'review', () => setQuestionView('review'))}
+          {subTab('journey', 'Question Journey', questionView === 'journey', () => setQuestionView('journey'))}
+          {subTab('qtype', 'MCQ vs Numerical', questionView === 'qtype', () => setQuestionView('qtype'))}
+        </div>
+        {questionView === 'review' && (
+          <Ta2ReviewPanel
+            result={result}
+            filter={filter}
+            subject={subject}
+            onFilter={setFilter}
+            onSubject={setSubject}
+          />
+        )}
+        {questionView === 'journey' && (
+          <QuestionJourney result={result} onBack={() => openSection('overview')} />
+        )}
+        {questionView === 'qtype' && (
+          <QuestionTypeAnalysis result={result} onBack={() => openSection('overview')} />
+        )}
+      </div>
+    );
+  } else if (section === 'topics') {
+    content = (
+      <div>
+        <div className="ta2-subnav">
+          {subTab('topics', 'Topic Analysis', topicView === 'topics', () => setTopicView('topics'))}
+          {subTab('difficulty', 'Difficulty Analysis', topicView === 'difficulty', () => setTopicView('difficulty'))}
+        </div>
+        {topicView === 'topics' && (
+          <TopicAnalysis
+            result={result}
+            onBack={() => openSection('overview')}
+            onJumpToQuestion={(question) => {
+              setShowSummary(false);
+              setSection('questions');
+              setQuestionView('review');
+              window.setTimeout(() => {
+                const el = document.getElementById(`review-q-${question.id}`);
+                if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 120);
+            }}
+          />
+        )}
+        {topicView === 'difficulty' && (
+          <DifficultyAnalysis result={result} onBack={() => openSection('overview')} />
+        )}
+      </div>
+    );
+  } else {
+    content = <ErrorDistribution result={result} onBack={() => openSection('overview')} />;
+  }
+
+  return (
+    <div className="ta2-shell">
+      <div className="ta2-page">
+        <div className="ta2-topbar">
+          <div className="ta2-crumb">
+            <button
+              className="ta2-crumb__back"
+              onClick={() => (showSummary ? setShowSummary(false) : onRetake())}
+              title={showSummary ? 'Back to the analysis overview' : (backLabel || 'Back to tests')}
+              aria-label={showSummary ? 'Back to the analysis overview' : (backLabel || 'Back to tests')}
+            >
+              <Ta2Icon name="back" />
+            </button>
+            <span className="ta2-crumb__label">Test Analysis</span>
+          </div>
+
+          <div className="ta2-actions">
+            <button className="ta2-btn" onClick={() => setShowSummary(true)}>
+              <Ta2Icon name="file" />
+              Score Summary
+            </button>
+            <button className="ta2-btn" onClick={onRetake}>
+              <Ta2Icon name="back" />
+              {backLabel || 'Back to Test'}
+            </button>
+            <button
+              className="ta2-btn"
+              onClick={() => { openSection('questions'); setQuestionView('review'); }}
+            >
+              <Ta2Icon name="chart" />
+              View test
+            </button>
+            <div className="ta2-menu">
+              <button
+                className="ta2-btn ta2-btn--primary"
+                onClick={(e) => { e.stopPropagation(); setExportOpen((v) => !v); }}
+              >
+                <Ta2Icon name="download" />
+                Export Report
+              </button>
+              {exportOpen && (
+                <div className="ta2-menu__list">
+                  <button className="ta2-menu__item" onClick={downloadReport}>
+                    <Ta2Icon name="download" />
+                    Download report (JSON)
+                  </button>
+                  <button
+                    className="ta2-menu__item"
+                    onClick={() => { setExportOpen(false); window.print(); }}
+                  >
+                    <Ta2Icon name="print" />
+                    Print / Save as PDF
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <h1 className="ta2-title">{result.title}</h1>
+        <p className="ta2-meta">
+          <span className="ta2-meta__pill">{testKind}</span>
+          <span className="ta2-meta__dot" />
+          <span>Submitted {ta2Submitted(result.submitted_at)}</span>
+          <span className="ta2-meta__dot" />
+          <span>
+            {o.total_marks}/{o.max_marks} marks ({ta2Round1(ta2Pct(o.total_marks, o.max_marks))}%)
+          </span>
+          <span className="ta2-meta__dot" />
+          <span>
+            {unattempted} unattempted
+          </span>
+        </p>
+
+        <div className="ta2-tabs" role="tablist">
+          {sections.map((s) => (
+            <button
+              key={s.key}
+              role="tab"
+              aria-selected={!showSummary && section === s.key}
+              className={`ta2-tab${!showSummary && section === s.key ? ' ta2-tab--active' : ''}`}
+              onClick={() => openSection(s.key)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        {content}
+      </div>
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 

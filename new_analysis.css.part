@@ -1,0 +1,585 @@
+
+/* ============================================================================
+   TEST ANALYSIS  (redesigned performance analysis workspace, .ta2-*)
+
+   Replaces the old 7-tab analysis row with five logical sections
+   (Overview / Time / Questions / Topics / Errors) and a card-based dashboard
+   language: KPI tiles, status strip, attempt-distribution donut and quick
+   insights. All colours are driven by the --ta2-* custom properties so the
+   dark theme (.dark on <body>) only has to redefine those tokens.
+   ========================================================================== */
+
+.ta2-shell {
+  /* light tokens */
+  --ta2-page: transparent;
+  --ta2-card: #ffffff;
+  --ta2-card-soft: #f8fafc;
+  --ta2-border: #e6ecf5;
+  --ta2-border-soft: #eef2f8;
+  --ta2-text: #101828;
+  --ta2-muted: #667085;
+  --ta2-faint: #98a2b3;
+  --ta2-blue: #2563eb;
+  --ta2-blue-soft: #eef4ff;
+  --ta2-blue-line: #c7d7fe;
+  --ta2-green: #15803d;
+  --ta2-green-soft: #e7f8ef;
+  --ta2-red: #dc2626;
+  --ta2-red-soft: #fdecec;
+  --ta2-grey: #64748b;
+  --ta2-grey-soft: #f1f5f9;
+  --ta2-purple: #7c3aed;
+  --ta2-purple-soft: #f3ecff;
+  --ta2-amber: #b45309;
+  --ta2-amber-soft: #fef6e7;
+  --ta2-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 10px 26px rgba(16, 24, 40, 0.06);
+  --ta2-shadow-lg: 0 16px 40px rgba(16, 24, 40, 0.16);
+  --ta2-radius: 16px;
+}
+
+body.dark .ta2-shell {
+  --ta2-card: #1b1f27;
+  --ta2-card-soft: #20242d;
+  --ta2-border: #2c313c;
+  --ta2-border-soft: #262b34;
+  --ta2-text: #e6eaf2;
+  --ta2-muted: #98a2b3;
+  --ta2-faint: #7d8798;
+  --ta2-blue: #60a5fa;
+  --ta2-blue-soft: #1e293b;
+  --ta2-blue-line: #3b5486;
+  --ta2-green: #4ade80;
+  --ta2-green-soft: #14311f;
+  --ta2-red: #f87171;
+  --ta2-red-soft: #3a1a1a;
+  --ta2-grey: #cbd5e1;
+  --ta2-grey-soft: #262b34;
+  --ta2-purple: #c4b5fd;
+  --ta2-purple-soft: #2a2244;
+  --ta2-amber: #fbbf24;
+  --ta2-amber-soft: #3a2c11;
+  --ta2-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 26px rgba(0, 0, 0, 0.28);
+  --ta2-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.ta2-shell {
+  color: var(--ta2-text);
+  padding: 20px 20px 72px;
+}
+
+.ta2-page { max-width: 1120px; margin: 0 auto; }
+
+/* ------------------------------ header bar ------------------------------ */
+
+.ta2-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ta2-crumb { display: flex; align-items: center; gap: 10px; }
+
+.ta2-crumb__back {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--ta2-border);
+  border-radius: 10px;
+  background: var(--ta2-card);
+  color: var(--ta2-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.ta2-crumb__back:hover {
+  color: var(--ta2-blue);
+  border-color: var(--ta2-blue-line);
+  background: var(--ta2-blue-soft);
+}
+
+.ta2-crumb__back svg { width: 17px; height: 17px; }
+
+.ta2-crumb__label {
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--ta2-text);
+}
+
+.ta2-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.ta2-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--ta2-border);
+  border-radius: 10px;
+  background: var(--ta2-card);
+  color: var(--ta2-text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.ta2-btn:hover { border-color: var(--ta2-blue-line); color: var(--ta2-blue); }
+
+.ta2-btn svg { width: 16px; height: 16px; }
+
+.ta2-btn--primary {
+  background: var(--ta2-blue);
+  border-color: var(--ta2-blue);
+  color: #ffffff;
+}
+
+.ta2-btn--primary:hover { background: #1d4ed8; border-color: #1d4ed8; color: #ffffff; }
+
+.ta2-menu { position: relative; }
+
+.ta2-menu__list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 250px;
+  padding: 6px;
+  background: var(--ta2-card);
+  border: 1px solid var(--ta2-border);
+  border-radius: 12px;
+  box-shadow: var(--ta2-shadow-lg);
+  z-index: 30;
+}
+
+.ta2-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--ta2-text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ta2-menu__item:hover { background: var(--ta2-blue-soft); color: var(--ta2-blue); }
+
+.ta2-menu__item svg { width: 16px; height: 16px; flex: none; }
+
+/* ------------------------------ title block ----------------------------- */
+
+.ta2-title {
+  margin: 16px 0 6px;
+  font-size: 1.72rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ta2-text);
+}
+
+.ta2-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ta2-muted);
+}
+
+.ta2-meta__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ta2-faint);
+}
+
+.ta2-meta__pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--ta2-blue-soft);
+  border: 1px solid var(--ta2-blue-line);
+  color: var(--ta2-blue);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ------------------------------ section tabs ---------------------------- */
+
+.ta2-tabs {
+  display: flex;
+  gap: 28px;
+  margin: 18px 0 22px;
+  padding: 0 2px;
+  border-bottom: 1px solid var(--ta2-border);
+  overflow-x: auto;
+}
+
+.ta2-tab {
+  position: relative;
+  padding: 12px 0;
+  border: none;
+  background: none;
+  color: var(--ta2-muted);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.ta2-tab:hover { color: var(--ta2-text); }
+
+.ta2-tab--active { color: var(--ta2-blue); font-weight: 800; }
+
+.ta2-tab--active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ta2-blue);
+}
+
+/* ------------------------------ sub navigation -------------------------- */
+
+.ta2-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.ta2-subnav__btn {
+  padding: 7px 14px;
+  border: 1px solid var(--ta2-border);
+  border-radius: 999px;
+  background: var(--ta2-card);
+  color: var(--ta2-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.ta2-subnav__btn:hover { color: var(--ta2-text); border-color: var(--ta2-faint); }
+
+.ta2-subnav__btn--active {
+  background: var(--ta2-blue-soft);
+  border-color: var(--ta2-blue-line);
+  color: var(--ta2-blue);
+}
+
+/* ------------------------------ cards ----------------------------------- */
+
+.ta2-card {
+  background: var(--ta2-card);
+  border: 1px solid var(--ta2-border);
+  border-radius: var(--ta2-radius);
+  box-shadow: var(--ta2-shadow);
+  padding: 18px 20px;
+}
+
+.ta2-card__title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--ta2-text);
+}
+
+.ta2-card__title svg { width: 17px; height: 17px; color: var(--ta2-blue); }
+
+/* ------------------------------ KPI tiles ------------------------------- */
+
+.ta2-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.ta2-kpi { display: flex; flex-direction: column; }
+
+.ta2-kpi__head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 12px;
+  font-size: 0.71rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ta2-muted);
+}
+
+.ta2-kpi__icon {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--ta2-blue-soft);
+  color: var(--ta2-blue);
+}
+
+.ta2-kpi__icon svg { width: 14px; height: 14px; }
+
+.ta2-kpi__icon--green { background: var(--ta2-green-soft); color: var(--ta2-green); }
+.ta2-kpi__icon--purple { background: var(--ta2-purple-soft); color: var(--ta2-purple); }
+.ta2-kpi__icon--amber { background: var(--ta2-amber-soft); color: var(--ta2-amber); }
+
+.ta2-kpi__value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ta2-text);
+}
+
+.ta2-kpi__value small { font-size: 1rem; font-weight: 600; color: var(--ta2-muted); }
+
+.ta2-kpi__sub { margin-top: 9px; font-size: 0.8rem; color: var(--ta2-muted); }
+
+.ta2-bar {
+  position: relative;
+  height: 6px;
+  margin-top: 16px;
+  border-radius: 999px;
+  background: var(--ta2-border-soft);
+}
+
+.ta2-bar__fill {
+  height: 100%;
+  min-width: 4px;
+  max-width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #60a5fa, var(--ta2-blue));
+}
+
+.ta2-bar__pct {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--ta2-blue);
+}
+
+/* ------------------------------ status strip ---------------------------- */
+
+.ta2-status {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.ta2-status__card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--ta2-card);
+  border: 1px solid var(--ta2-border);
+  border-radius: 14px;
+  box-shadow: var(--ta2-shadow);
+}
+
+.ta2-status__icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--ta2-grey-soft);
+  color: var(--ta2-grey);
+}
+
+.ta2-status__icon svg { width: 16px; height: 16px; }
+
+.ta2-status--correct .ta2-status__icon { background: var(--ta2-green-soft); color: var(--ta2-green); }
+.ta2-status--incorrect .ta2-status__icon { background: var(--ta2-red-soft); color: var(--ta2-red); }
+.ta2-status--marked .ta2-status__icon { background: var(--ta2-purple-soft); color: var(--ta2-purple); }
+
+.ta2-status__label { font-size: 0.84rem; font-weight: 700; color: var(--ta2-muted); }
+
+.ta2-status__value {
+  margin-left: auto;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ta2-text);
+}
+
+/* ------------------------------ overview grid --------------------------- */
+
+.ta2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.ta2-grid--wide { grid-template-columns: 1.05fr 1fr; }
+
+/* donut */
+
+.ta2-donut {
+  position: relative;
+  width: 186px;
+  height: 186px;
+  margin: 4px auto 16px;
+}
+
+.ta2-donut__svg { width: 186px; height: 186px; transform: rotate(-90deg); }
+
+.ta2-donut__track { fill: none; stroke: var(--ta2-border-soft); }
+
+.ta2-donut__seg { fill: none; stroke-linecap: butt; transition: stroke-width 0.15s; }
+
+.ta2-donut__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.ta2-donut__center strong { font-size: 1.2rem; font-weight: 800; color: var(--ta2-text); }
+.ta2-donut__center span { font-size: 0.74rem; font-weight: 600; color: var(--ta2-muted); }
+
+.ta2-legend { display: flex; flex-direction: column; }
+
+.ta2-legend__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  border-top: 1px solid var(--ta2-border-soft);
+  font-size: 0.86rem;
+  color: var(--ta2-text);
+}
+
+.ta2-legend__row:first-child { border-top: none; }
+
+.ta2-legend__dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+.ta2-legend__count {
+  margin-left: auto;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.ta2-legend__pct {
+  min-width: 58px;
+  text-align: right;
+  color: var(--ta2-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* insights */
+
+.ta2-insights { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+
+.ta2-insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 11px 2px;
+  border-top: 1px solid var(--ta2-border-soft);
+  font-size: 0.87rem;
+  line-height: 1.45;
+  color: var(--ta2-text);
+}
+
+.ta2-insight:first-child { border-top: none; }
+
+.ta2-insight svg { width: 17px; height: 17px; flex: none; margin-top: 1px; }
+
+.ta2-insight--info svg { color: var(--ta2-blue); }
+.ta2-insight--good svg { color: var(--ta2-green); }
+.ta2-insight--warn svg { color: var(--ta2-amber); }
+.ta2-insight--focus svg { color: var(--ta2-red); }
+.ta2-insight--time svg { color: var(--ta2-purple); }
+
+.ta2-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* ------------------------------ embedded panels -------------------------
+   The seven original analysis screens are reused verbatim inside the shell,
+   so their own centred headers/footers are neutralised here instead of being
+   rewritten (all of their internals keep working untouched).
+   ---------------------------------------------------------------------- */
+
+.ta2-shell .ta-page { max-width: none; margin: 0; padding: 0; }
+
+.ta2-shell .ta-back-btn { display: none; }
+
+.ta2-shell .ta-footer { display: none; }
+
+.ta2-shell .ta-header { margin-bottom: 20px; }
+
+.ta2-shell .ta-heading { font-size: 1.35rem; color: var(--ta2-text); }
+
+.ta2-shell .review-section { margin-bottom: 0; }
+
+.ta2-shell .review-head h2 { color: var(--ta2-text); }
+
+.ta2-shell .tp-summary,
+.ta2-shell .ed-report-card,
+.ta2-shell .da2-takeaways,
+.ta2-shell .ta-insight-box { border-radius: 14px; }
+
+.ta2-shell .analysis-actions { display: none; }
+
+/* ------------------------------ responsive ------------------------------ */
+
+@media (max-width: 980px) {
+  .ta2-kpis { grid-template-columns: repeat(2, 1fr); }
+  .ta2-status { grid-template-columns: repeat(2, 1fr); }
+  .ta2-grid, .ta2-grid--wide { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .ta2-shell { padding: 14px 12px 60px; }
+  .ta2-kpis { grid-template-columns: 1fr; }
+  .ta2-status { grid-template-columns: 1fr; }
+  .ta2-title { font-size: 1.35rem; }
+  .ta2-tabs { gap: 18px; }
+  .ta2-tab { font-size: 0.85rem; }
+  .ta2-actions { width: 100%; }
+  .ta2-btn { flex: 1 1 auto; justify-content: center; }
+}
+
+/* ------------------------------ print ----------------------------------- */
+
+@media print {
+  .ta2-actions, .ta2-tabs, .ta2-subnav, .ta2-crumb__back, .ta2-foot { display: none !important; }
+  .ta2-card, .ta2-status__card { box-shadow: none; border-color: #cccccc; }
+  .ta2-shell { padding: 0; }
+}

@@ -71,6 +71,8 @@ CREATE TABLE questions (
     question_type     TEXT NOT NULL CHECK (question_type IN ('mcq', 'numerical')),
     difficulty        TEXT NOT NULL DEFAULT 'easy'
                       CHECK (difficulty IN ('easy', 'moderate', 'difficult')),
+    topic             TEXT,                -- JEE chapter (filled by tag_topics.js)
+    subtopic          TEXT,                -- sub-chapter inside the topic
     body              TEXT NOT NULL,
     formula           TEXT,                -- LaTeX for the stem (optional)
     correct_option_id BIGINT,              -- MCQ only (validated by trigger)
@@ -198,6 +200,7 @@ CREATE INDEX idx_attempt_journey_attempt ON attempt_journey (attempt_id, viewed_
 -- ---------------------------------------------------------------------------
 CREATE INDEX idx_questions_section    ON questions (section_id);
 CREATE INDEX idx_options_question     ON question_options (question_id);
+CREATE INDEX idx_questions_topic      ON questions (topic, subtopic);
 CREATE INDEX idx_question_images_question ON question_images (question_id);
 CREATE INDEX idx_attempts_user        ON attempts (user_id);
 CREATE INDEX idx_attempts_test        ON attempts (test_id);

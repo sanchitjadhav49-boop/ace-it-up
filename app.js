@@ -206,6 +206,28 @@ const pool = new Pool({
 
 });
 
+// A single idle-client error (network blip, DB restart) is emitted as an
+// 'error' event on the pool; with no listener that crashes node and every
+// later request dies with "Request failed (500)".
+pool.on('error', (err) => {
+
+  console.error('[pg pool error]', (err && err.message) || err);
+
+});
+
+// Same idea process-wide: log loudly and keep serving instead of exiting.
+process.on('unhandledRejection', (err) => {
+
+  console.error('[unhandledRejection]', (err && err.stack) || err);
+
+});
+
+process.on('uncaughtException', (err) => {
+
+  console.error('[uncaughtException]', (err && err.stack) || err);
+
+});
+
 
 
 // ---------------------------------------------------------------------------
@@ -1385,6 +1407,7 @@ app.get('/attempts/:id/result', async (req, res, next) => {
       `SELECT q.id, s.name AS section, q.question_type, q.body, q.formula,
 
               q.positive_marks, q.negative_marks, q.position, q.difficulty,
+              q.topic, q.subtopic,
 
               aq.status, aq.selected_option_id, aq.numerical_answer,
 
@@ -1440,6 +1463,8 @@ app.get('/attempts/:id/result', async (req, res, next) => {
       position: r.position,
       global_position: globalQuestionPosition(r.section, r.position),
       difficulty: r.difficulty,
+      topic: r.topic,
+      subtopic: r.subtopic,
       status: r.status,
       selected_option_id: r.selected_option_id != null ? Number(r.selected_option_id) : null,
       numerical_answer: r.numerical_answer != null ? Number(r.numerical_answer) : null,
@@ -1943,8 +1968,28 @@ app.get('/api/attempts/:attemptId/journey', async (req, res, next) => {
   }
 });
 
+// Liveness probe: launchers wait on this before opening the frontend, and the
+// frontend can tell "API is down" apart from "API returned an error".
+app.get('/api/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({ ok: true, db: 'up', uptime_seconds: Math.round(process.uptime()) });
+  } catch (err) {
+    res.status(503).json({ ok: false, db: 'down', error: err.message });
+  }
+});
+
 app.use((req, res) => {
   res.status(404).json({ error: 'not found' });
+});
+
+// Express' default error handler answers with an HTML stack trace, which the
+// frontend turns into the opaque "Request failed (500)". Always send JSON.
+app.use((err, req, res, next) => {
+  const status = (err && err.status) || 500;
+  console.error('[api error]', req.method, req.originalUrl, (err && err.stack) || err);
+  if (res.headersSent) return next(err);
+  res.status(status).json({ error: (err && err.message) || 'internal server error' });
 });
 
 
