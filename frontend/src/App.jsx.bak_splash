@@ -801,10 +801,25 @@ function NoteEditor({ note, test, onSave, onCancel, saving }) {
 
 export default function App() {
 
-  // AceIT Up cinematic splash screen. SplashScreen plays the intro and calls
-  // onDone once its fade-out animation has finished, so the timing lives in
-  // one place instead of racing a fixed timer here.
+    // AceIT Up cinematic splash screen
+
   const [showSplash, setShowSplash] = useState(true);
+
+
+
+  useEffect(() => {
+
+    const splashTimer = setTimeout(() => {
+
+      setShowSplash(false);
+
+    }, 4800);
+
+
+
+    return () => clearTimeout(splashTimer);
+
+  }, []);
 
   // ---------------------------------------------------------------------
 
@@ -1835,7 +1850,7 @@ const [historyLoading, setHistoryLoading] = useState(false);
 
     if (showSplash) {
 
-    return <SplashScreen onDone={() => setShowSplash(false)} />;
+    return <SplashScreen />;
 
   }
 

@@ -1,5 +1,8 @@
 /* =========================================================
-   AceIT Up — Cinematic Splash Screen
+   AceIT Up - Cinematic Splash Screen
+   The reveal is CSS keyframe driven; the exit is driven by the
+   `.splash-screen--exit` class that SplashScreen.jsx adds after the
+   intro, so the fade-out always finishes before React unmounts it.
    ========================================================= */
 
 .splash-screen {
@@ -22,8 +25,11 @@
     );
 
   color: white;
+}
 
-  animation: splashExit 0.8s ease 4.2s forwards;
+/* added by the component once the intro has played */
+.splash-screen--exit {
+  animation: splashExit 0.75s ease forwards;
 }
 
 /* ---------------------------------------------------------
@@ -466,34 +472,26 @@
   }
 }
 
-/* Respect users who prefer reduced motion */
+/* =========================================================
+   Reduced motion
+   ---------------------------------------------------------
+   NOTE: this block deliberately does NOT switch the intro off.
+   Chrome/Firefox report `prefers-reduced-motion: reduce` whenever
+   Windows has "Animation effects" off (VisualFXSetting = best
+   performance), which used to leave the splash as a frozen black
+   frame for ~5 seconds. The intro is a one-shot brand moment and
+   SplashScreen.jsx lets the student skip it with a click or a key,
+   so we keep the reveal and only shorten the timeline.
+   ========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
-  .splash-screen,
-  .splash-light,
-  .splash-glow,
-  .splash-symbol,
-  .splash-title,
-  .splash-title span,
-  .splash-tagline,
-  .splash-progress,
-  .splash-progress__bar {
-    animation: none !important;
+  /* lighter streaks, the rest of the reveal is kept */
+  .splash-light {
+    animation-duration: 1.6s;
+    opacity: 0.35;
   }
 
-  .splash-screen {
-    opacity: 1;
-  }
-
-  .splash-symbol,
-  .splash-title,
-  .splash-title span,
-  .splash-tagline,
-  .splash-progress {
-    opacity: 1;
-    transform: none;
-  }
-
-  .splash-progress__bar {
-    width: 100%;
+  .splash-glow {
+    animation-iteration-count: 1;
   }
 }
