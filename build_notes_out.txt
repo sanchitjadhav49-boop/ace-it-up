@@ -1,0 +1,37 @@
+
+> ace-it-up-frontend@1.0.0 build
+> vite build
+
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[1m[33m[plugin:vite:esbuild][39m[22m [33m[plugin vite:esbuild] src/QuestionJourney.jsx: [33mThe character ">" is not valid inside a JSX element[33m
+160|        <div className="ta-table-wrap">
+161|          <h2 className="ta-table-title">Jump Timeline</h2>
+162|          <p className="ta-table-sub muted">Each row is a navigation event (from -> to). Use this to spot lots of back-and-forth or long intervals.</p>
+   |                                                                                  ^
+163|  
+164|          {loading ? <p className="muted">Loading journey�</p> : error ? <p className="error">{error}</p> : (
+[39m
+[1m[33m[plugin:vite:esbuild][39m[22m [33m[plugin vite:esbuild] src/QuestionJourney.jsx: [33mThe character ">" is not valid inside a JSX element[33m
+199|                <table className="ta-table">
+200|                  <thead>
+201|                    <tr><th>#</th><th>Time</th><th>From</th><th>-></th><th>To</th><th>Subject</th></tr>
+   |                                                                 ^
+202|                  </thead>
+203|                  <tbody>
+[39m
+[1m[33m[plugin:vite:esbuild][39m[22m [33m[plugin vite:esbuild] src/QuestionJourney.jsx: [33mThe character ">" is not valid inside a JSX element[33m
+207|                        <td>{formatTime(e.viewed_at)}</td>
+208|                        <td>Q{e.fromPos}{e.fromPos==='?'? ` (${e.from_question_id})`:''}</td>
+209|                        <td style={{textAlign:'center'}}>-></td>
+   |                                                          ^
+210|                        <td>Q{e.toPos}{e.toPos==='?'? ` (${e.to_question_id})`:''}</td>
+211|                        <td>{e.toSubj || e.fromSubj}</td>
+[39m
+[32m✓[39m 42 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                 [39m[1m[2m  0.41 kB[22m[1m[22m[2m │ gzip:  0.28 kB[22m
+[2mdist/[22m[35massets/index-vE1YsWtM.css  [39m[1m[2m100.13 kB[22m[1m[22m[2m │ gzip: 18.06 kB[22m
+[2mdist/[22m[36massets/index-BSpzwJrD.js   [39m[1m[2m287.43 kB[22m[1m[22m[2m │ gzip: 82.95 kB[22m
+[32m✓ built in 856ms[39m

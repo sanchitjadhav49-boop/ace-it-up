@@ -143,290 +143,15 @@ const QUICK_JUMP_GROUPS = [
 
 
 
-// ===========================================================================
-// MY NOTES - redesigned "learning notes" page (nts-* classes, notes.css)
-//   header  : Back + "My Notes" + tagline, light-bulb slogan on the right
-//   write    : "Write a note for another test" picker + Start writing
-//   body     : note cards (or the "No notes yet." empty state)
-//   footer   : Pro Tip strip
-// ===========================================================================
-
-// --- helpers ---------------------------------------------------------------
-
-// "12 Jun 2026, 6:40 PM"
-function ntsDateTime(value) {
-  if (!value) return '';
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return '';
-  const date = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-  const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-  return `${date}, ${time}`;
-}
-
-function ntsWords(text) {
-  const t = String(text || '').trim();
-  return t ? t.split(/\s+/).length : 0;
-}
-
-function ntsStamp(value) {
-  const t = value ? new Date(value).getTime() : NaN;
-  return Number.isFinite(t) ? t : 0;
-}
-
-// --- icons -----------------------------------------------------------------
-
-function NtsIcon({ name, size = 18 }) {
-  const base = {
-    width: size,
-    height: size,
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.8,
-    strokeLinecap: 'round',
-    strokeLinejoin: 'round',
-    'aria-hidden': 'true',
-    focusable: 'false',
-  };
-
-  if (name === 'back') {
-    return (
-      <svg {...base}>
-        <path d="M15.4 19.4 8 12l7.4-7.4" />
-      </svg>
-    );
-  }
-
-  if (name === 'note') {
-    return (
-      <svg {...base}>
-        <path d="M18.6 4.6H5.4a1.4 1.4 0 0 0-1.4 1.4v12a1.4 1.4 0 0 0 1.4 1.4h7.2l6-6V6a1.4 1.4 0 0 0-1.4-1.4z" />
-        <path d="M12.6 19.4v-4.2a1.6 1.6 0 0 1 1.6-1.6h4.4" />
-        <path d="M7.4 9h6.4M7.4 12.4h4" />
-      </svg>
-    );
-  }
-
-  if (name === 'doc') {
-    return (
-      <svg {...base}>
-        <path d="M14 3.4H7a1.6 1.6 0 0 0-1.6 1.6v14a1.6 1.6 0 0 0 1.6 1.6h10a1.6 1.6 0 0 0 1.6-1.6V8z" />
-        <path d="M13.8 3.6V8h4.6" />
-      </svg>
-    );
-  }
-
-  if (name === 'target') {
-    return (
-      <svg {...base}>
-        <circle cx="12" cy="12" r="8.4" />
-        <circle cx="12" cy="12" r="4.4" />
-        <circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none" />
-      </svg>
-    );
-  }
-
-  if (name === 'brain') {
-    return (
-      <svg {...base}>
-        <path d="M12 5.2a3.1 3.1 0 0 0-5.6 1.5c-1.6.5-2.4 2-1.9 3.5-1.2 1.1-1.2 2.9 0 4-.6 1.6.4 3.2 2 3.5.4 1.4 2 2.1 3.4 1.5.7.7 1.4 1 2.1 1V5.2z" />
-        <path d="M12 5.2a3.1 3.1 0 0 1 5.6 1.5c1.6.5 2.4 2 1.9 3.5 1.2 1.1 1.2 2.9 0 4 .6 1.6-.4 3.2-2 3.5-.4 1.4-2 2.1-3.4 1.5-.7.7-1.4 1-2.1 1" />
-      </svg>
-    );
-  }
-
-  if (name === 'bars') {
-    return (
-      <svg {...base}>
-        <path d="M4.6 19.6h15" />
-        <path d="M7.6 19.6v-5.2M12 19.6V8.4M16.4 19.6v-8.4" strokeWidth="2.6" />
-      </svg>
-    );
-  }
-
-  if (name === 'star') {
-    return (
-      <svg {...base} fill="currentColor" stroke="none">
-        <path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.8z" />
-      </svg>
-    );
-  }
-
-  if (name === 'pencil') {
-    return (
-      <svg {...base}>
-        <path d="M16.4 3.9l3.7 3.7-11 11-4.7 1 1-4.7z" />
-        <path d="M14.2 6.1l3.7 3.7" />
-      </svg>
-    );
-  }
-
-  if (name === 'bulb') {
-    return (
-      <svg {...base}>
-        <path d="M9.4 17.4a5.6 5.6 0 1 1 5.2 0v1.4a1.6 1.6 0 0 1-1.6 1.6h-2a1.6 1.6 0 0 1-1.6-1.6z" />
-        <path d="M9.8 20.8h4.4" />
-      </svg>
-    );
-  }
-
-  if (name === 'clock') {
-    return (
-      <svg {...base}>
-        <circle cx="12" cy="12" r="8.4" />
-        <path d="M12 7.4V12l3.2 1.9" />
-      </svg>
-    );
-  }
-
-  if (name === 'calendar') {
-    return (
-      <svg {...base}>
-        <rect x="3.4" y="5.2" width="17.2" height="15.4" rx="2.4" />
-        <path d="M3.4 9.6h17.2M8.2 3.2v3.6M15.8 3.2v3.6" />
-      </svg>
-    );
-  }
-
-  if (name === 'trash') {
-    return (
-      <svg {...base}>
-        <path d="M4.8 6.8h14.4" />
-        <path d="M9.4 6.8V4.6h5.2v2.2" />
-        <path d="M6.6 6.8l.9 12a1.4 1.4 0 0 0 1.4 1.3h6.2a1.4 1.4 0 0 0 1.4-1.3l.9-12" />
-        <path d="M10.2 10.4v6M13.8 10.4v6" />
-      </svg>
-    );
-  }
-
-  if (name === 'chev') {
-    return (
-      <svg {...base}>
-        <path d="M5.6 8.8 12 15.2l6.4-6.4" />
-      </svg>
-    );
-  }
-
-  if (name === 'check') {
-    return (
-      <svg {...base}>
-        <path d="M5.2 12.6l4.6 4.6 9-10" />
-      </svg>
-    );
-  }
-
-  if (name === 'arrow') {
-    return (
-      <svg {...base}>
-        <path d="M4.6 12h14.8" />
-        <path d="M13.4 6l6 6-6 6" />
-      </svg>
-    );
-  }
-
-  if (name === 'sparkle') {
-    return (
-      <svg {...base} fill="currentColor" stroke="none">
-        <path d="M12 3.6l1.3 4.6 4.6 1.3-4.6 1.3L12 15.4l-1.3-4.6L6.1 9.5l4.6-1.3z" />
-      </svg>
-    );
-  }
-
-  return <NtsIcon name="doc" size={size} />;
-}
-
-// --- illustrations ---------------------------------------------------------
-
-function NtsBulbArt() {
-  return (
-    <svg className="nts-bulb" width="74" height="74" viewBox="0 0 74 74" fill="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="ntsBulbG" x1="20" y1="18" x2="52" y2="58" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#fde68a" />
-          <stop offset="0.55" stopColor="#f7c948" />
-          <stop offset="1" stopColor="#f59e0b" />
-        </linearGradient>
-      </defs>
-      {/* rays */}
-      <g stroke="#fbbf24" strokeWidth="3" strokeLinecap="round">
-        <path d="M37 4.5v6.5" />
-        <path d="M15.5 14.5l4.6 4.6" />
-        <path d="M58.5 14.5l-4.6 4.6" />
-        <path d="M4.5 37H11" />
-        <path d="M63 37h6.5" />
-      </g>
-      {/* bulb */}
-      <circle cx="37" cy="33" r="18.5" fill="url(#ntsBulbG)" />
-      <circle cx="37" cy="33" r="18.5" fill="none" stroke="#e2a300" strokeWidth="2.4" />
-      <path d="M30.6 51.5h12.8v4.2a3 3 0 0 1-3 3h-6.8a3 3 0 0 1-3-3z" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="2" />
-      <path d="M31.6 57.6h10.8" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
-      {/* filament */}
-      <path d="M32.4 33.6c1.6-3 3-4.6 4.6-4.6s3 1.6 4.6 4.6" stroke="#fff8e1" strokeWidth="2.4" strokeLinecap="round" />
-      {/* sparkle */}
-      <path d="M56 45l1.6 3.8 3.8 1.6-3.8 1.6-1.6 3.9-1.7-3.9-3.8-1.6 3.8-1.6z" fill="#fcd34d" />
-    </svg>
-  );
-}
-
-function NtsPadArt() {
-  return (
-    <svg width="196" height="164" viewBox="0 0 196 164" fill="none" aria-hidden="true">
-      {/* soft background blobs */}
-      <ellipse cx="88" cy="92" rx="66" ry="58" fill="#eaf1fe" />
-      <ellipse cx="140" cy="112" rx="34" ry="30" fill="#f1f6ff" />
-      {/* notepad */}
-      <rect x="46" y="34" width="86" height="104" rx="9" fill="#ffffff" stroke="#4a86f7" strokeWidth="3.2" />
-      <path d="M46 56h86" stroke="#cddcf7" strokeWidth="2.6" />
-      {/* spiral rings */}
-      <g stroke="#4cbb77" strokeWidth="3">
-        <path d="M58 26v12M72 26v12M86 26v12M100 26v12M114 26v12" strokeLinecap="round" />
-      </g>
-      {/* ruled lines */}
-      <g stroke="#bfd4f7" strokeWidth="3" strokeLinecap="round">
-        <path d="M60 74h48" />
-        <path d="M60 90h58" />
-        <path d="M60 106h40" />
-        <path d="M60 122h52" />
-      </g>
-      {/* pencil */}
-      <g transform="rotate(38 150 104)">
-        <rect x="140" y="50" width="20" height="86" rx="4" fill="#f7c948" stroke="#e2a300" strokeWidth="2.6" />
-        <rect x="140" y="50" width="20" height="18" rx="4" fill="#ffe08a" stroke="#e2a300" strokeWidth="2.6" />
-        <path d="M140 136h20l-10 16z" fill="#e7ecd6" stroke="#c9a227" strokeWidth="2.4" />
-        <path d="M146 145h8l-4 7z" fill="#3f4a5a" />
-      </g>
-      {/* sparkles */}
-      <path d="M168 40l2.2 5.2 5.2 2.2-5.2 2.2-2.2 5.2-2.2-5.2-5.2-2.2 5.2-2.2z" fill="#9ec1f5" />
-      <path d="M26 62l1.7 4 4 1.7-4 1.7-1.7 4-1.7-4-4-1.7 4-1.7z" fill="#c2d8fb" />
-    </svg>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // NOTES PAGE - every learning note the student has written, plus a starter for
 // a test they have not written about yet.
-// ---------------------------------------------------------------------------
-
 function NotesPage({ notes, loading, error, onBack, onEdit, onDelete, tests, onNew }) {
   const [newTestId, setNewTestId] = useState('');
 
-  // tests the student has not written a note for yet, easiest names first
-  const notYetNoted = useMemo(() => {
-    const noted = new Set((notes || []).map((n) => String(asId(n.test_id))));
-    return (tests || [])
-      .filter((t) => !noted.has(String(asId(t.id))))
-      .slice()
-      .sort((a, b) => String(a.title || '').localeCompare(String(b.title || '')));
-  }, [notes, tests]);
-
-  // newest note first
-  const ordered = useMemo(() => {
-    return (notes || []).slice().sort((a, b) => {
-      const d = ntsStamp(b.updated_at) - ntsStamp(a.updated_at);
-      if (d !== 0) return d;
-      return asId(b.id) - asId(a.id);
-    });
-  }, [notes]);
+  const notYetNoted = (tests || []).filter(
+    (t) => !notes.some((n) => asId(n.test_id) === asId(t.id))
+  );
 
   function startNew(e) {
     e.preventDefault();
@@ -438,251 +163,106 @@ function NotesPage({ notes, loading, error, onBack, onEdit, onDelete, tests, onN
   }
 
   const header = (
-    <header className="nts-head">
-      <button className="nts-back" type="button" onClick={onBack}>
-        <NtsIcon name="back" size={17} /> Back
-      </button>
-      <div className="nts-head__txt">
-        <h1>My Notes</h1>
-        <p>Write down your mistakes, track your learning and build a stronger you!</p>
-      </div>
-      <div className="nts-head__art">
-        <NtsBulbArt />
-        <span className="nts-head__slogan">
-          Small notes.<br />
-          <b>Big progress!</b>
-        </span>
-      </div>
-    </header>
+    <div className="notes-header">
+      <button className="btn-secondary" onClick={onBack}>Back</button>
+      <h1>My Notes</h1>
+    </div>
   );
 
   if (loading) {
     return (
-      <div className="nts-root">
-        <div className="nts-wrap">
-          {header}
-          <div className="nts-skel" />
-          <div className="nts-skel" style={{ height: 96 }} />
-          <p className="nts-muted">Loading your notes...</p>
-        </div>
+      <div className="notes-page">
+        {header}
+        <div className="notes-loading">Loading notes...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="nts-root">
-        <div className="nts-wrap">
-          {header}
-          <div className="nts-error">{error}</div>
-          <div>
-            <button className="nts-btn nts-btn--primary" type="button" onClick={onBack}>
-              <NtsIcon name="back" size={16} /> Go Back
-            </button>
-          </div>
-        </div>
+      <div className="notes-page">
+        {header}
+        <div className="notes-error">Error: {error}</div>
+        <button className="btn-primary" onClick={onBack}>Go Back</button>
       </div>
     );
   }
 
   return (
-    <div className="nts-root">
-      <div className="nts-wrap">
-        {header}
+    <div className="notes-page">
+      {header}
 
-        {/* ---------------- write a note for another test ---------------- */}
-        <section className="nts-write">
-          <div className="nts-write__head">
-            <span className="nts-write__icon"><NtsIcon name="note" size={22} /></span>
-            <h2>Write a note for another test</h2>
-          </div>
-
-          <form className="nts-write__row" onSubmit={startNew}>
-            <div className="nts-select">
-              <select
-                id="nts-new-test"
-                aria-label="Choose a test to write a note for"
-                value={newTestId}
-                onChange={(e) => setNewTestId(e.target.value)}
-                disabled={notYetNoted.length === 0}
-              >
-                <option value="">
-                  {notYetNoted.length === 0
-                    ? 'You have written a note for every test'
-                    : 'Choose a test and write your note (e.g., mistake, concept to revise, learning)...'}
-                </option>
-                {notYetNoted.map((t) => (
-                  <option key={t.id} value={asId(t.id)}>{t.title}</option>
-                ))}
-              </select>
-              <span className="nts-select__chev"><NtsIcon name="chev" size={20} /></span>
-            </div>
-
-            <button type="submit" className="nts-start" disabled={!newTestId}>
-              <NtsIcon name="pencil" size={18} /> Start writing
-            </button>
-          </form>
-
-          <ul className="nts-perks">
-            <li>
-              <span className="nts-perks__icon nts-perks__icon--blue"><NtsIcon name="target" size={20} /></span>
-              Track your mistakes
-            </li>
-            <li>
-              <span className="nts-perks__icon nts-perks__icon--violet"><NtsIcon name="brain" size={20} /></span>
-              Revisit key concepts
-            </li>
-            <li>
-              <span className="nts-perks__icon nts-perks__icon--green"><NtsIcon name="bars" size={20} /></span>
-              Improve over time
-            </li>
-            <li>
-              <span className="nts-perks__icon nts-perks__icon--amber"><NtsIcon name="star" size={20} /></span>
-              Be a better you
-            </li>
-          </ul>
-        </section>
-
-        {/* ---------------- notes (or the empty state) ---------------- */}
-        {ordered.length === 0 ? (
-          <section className="nts-empty">
-            <NtsPadArt />
-            <h3>No notes yet.</h3>
-            <p>Start writing your learnings after each mock test!</p>
-          </section>
-        ) : (
-          <section className="nts-listwrap">
-            <div className="nts-listhead">
-              <h2>Your notes</h2>
-              <span className="nts-count">
-                {ordered.length} {ordered.length === 1 ? 'test covered' : 'tests covered'}
-              </span>
-            </div>
-
-            <div className="nts-grid">
-              {ordered.map((note) => {
-                const text = (note.content || '').trim();
-                const words = ntsWords(text);
-                return (
-                  <article key={note.id} className="nts-card">
-                    <div className="nts-card__top">
-                      <span className="nts-card__icon"><NtsIcon name="doc" size={19} /></span>
-                      <h3 className="nts-card__title">{note.test_title || 'Mock Test'}</h3>
-                      <button
-                        className="nts-card__del"
-                        type="button"
-                        title="Delete this note"
-                        onClick={() => onDelete(note)}
-                      >
-                        <NtsIcon name="trash" size={17} />
-                      </button>
-                    </div>
-
-                    <div className="nts-card__meta">
-                      <span><NtsIcon name="calendar" size={14} /> {ntsDateTime(note.updated_at) || 'Not saved yet'}</span>
-                      <span><NtsIcon name="note" size={14} /> {words} {words === 1 ? 'word' : 'words'}</span>
-                    </div>
-
-                    <p className="nts-card__preview">
-                      {text
-                        ? (text.length > 320 ? text.slice(0, 320) + '...' : text)
-                        : <em>No content yet - open the note and start writing.</em>}
-                    </p>
-
-                    <div className="nts-card__actions">
-                      <button className="nts-btn nts-btn--primary" type="button" onClick={() => onEdit(note)}>
-                        <NtsIcon name="pencil" size={16} /> {text ? 'Open note' : 'Start writing'}
-                      </button>
-                      <button className="nts-btn nts-btn--ghost" type="button" onClick={() => onDelete(note)}>
-                        <NtsIcon name="trash" size={16} /> Delete
-                      </button>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* ---------------- pro tip strip ---------------- */}
-        <div className="nts-tip">
-          <span className="nts-tip__icon"><NtsIcon name="bulb" size={22} /></span>
-          <span className="nts-tip__label">Pro Tip:</span>
-          <span className="nts-tip__div" />
-          <p>Include what you got wrong, why it happened, and how you{'\u2019'}ll avoid it next time.</p>
+      <form className="notes-new" onSubmit={startNew}>
+        <label className="notes-new__label" htmlFor="notes-new-test">
+          Write a note for another test
+        </label>
+        <div className="notes-new__row">
+          <select
+            id="notes-new-test"
+            className="notes-new__select"
+            value={newTestId}
+            onChange={(e) => setNewTestId(e.target.value)}
+          >
+            <option value="">Choose a test...</option>
+            {notYetNoted.map((t) => (
+              <option key={t.id} value={asId(t.id)}>{t.title}</option>
+            ))}
+          </select>
+          <button type="submit" className="btn-primary" disabled={!newTestId}>Start writing</button>
         </div>
-      </div>
+        <p className="notes-new__hint">
+          Do this right after every mock test: list your mistakes and learnings while they are still fresh.
+        </p>
+      </form>
+
+      {notes.length === 0 ? (
+        <div className="notes-empty">
+          <p>No notes yet. Start writing your learnings after each mock test!</p>
+        </div>
+      ) : (
+        <div className="notes-list">
+          {notes.map((note) => {
+            const updated = note.updated_at
+              ? new Date(note.updated_at).toLocaleString('en-US', {
+                  year: 'numeric', month: 'short', day: 'numeric',
+                  hour: '2-digit', minute: '2-digit',
+                })
+              : '';
+            const text = (note.content || '').trim();
+            return (
+              <div key={note.id} className="note-card">
+                <div className="note-card__header">
+                  <h3 className="note-card__title">{note.test_title}</h3>
+                  <span className="note-card__updated">Updated: {updated}</span>
+                </div>
+                <p className="note-card__preview">
+                  {text
+                    ? (text.length > 260 ? text.slice(0, 260) + '...' : text)
+                    : <em>No content yet</em>}
+                </p>
+                <div className="note-card__actions">
+                  <button className="btn-secondary" onClick={() => onEdit(note)}>Edit</button>
+                  <button className="btn-danger" onClick={() => onDelete(note)}>Delete</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// NOTE EDITOR - write (or update) the learning note for one test, with
-// one-click prompt chips that seed the usual sections of a good note.
+// NOTE EDITOR - write (or update) the learning note for one test.
 // ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// NOTE EDITOR - write (or update) the learning note for one test, with
-// one-click prompt chips that seed the usual sections of a good note.
-// ---------------------------------------------------------------------------
-
-const NTS_PROMPTS = [
-  { label: 'Mistakes I made', head: 'Mistakes I made', icon: 'target' },
-  { label: 'Concepts to revise', head: 'Concepts to revise', icon: 'brain' },
-  { label: 'What I learnt', head: 'What I learnt', icon: 'bulb' },
-  { label: 'Time management', head: 'Time management', icon: 'clock' },
-];
-
-function ntsEscapeRegExp(text) {
-  return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 function NoteEditor({ note, test, onSave, onCancel, saving }) {
   const [content, setContent] = useState(
     note && typeof note.content === 'string' ? note.content : ''
   );
   const [error, setError] = useState('');
-  const [flash, setFlash] = useState('');
-  const areaRef = useRef(null);
-  const flashTimer = useRef(null);
-
   const hasText = content.trim().length > 0;
-  const words = ntsWords(content);
-
-  useEffect(() => {
-    return () => {
-      if (flashTimer.current) window.clearTimeout(flashTimer.current);
-    };
-  }, []);
-
-  // a prompt is "done" once its heading is already in the note
-  function promptDone(head) {
-    return new RegExp('(^|\\n)\\s*' + ntsEscapeRegExp(head) + '\\s*:', 'i').test(content);
-  }
-
-  function addPrompt(prompt) {
-    if (promptDone(prompt.head)) {
-      setFlash('"' + prompt.label + '" is already in this note');
-      if (flashTimer.current) window.clearTimeout(flashTimer.current);
-      flashTimer.current = window.setTimeout(() => setFlash(''), 2200);
-      const node = areaRef.current;
-      if (node) node.focus();
-      return;
-    }
-
-    const trimmed = content.replace(/\s+$/, '');
-    setContent((trimmed ? trimmed + '\n\n' : '') + prompt.head + ':\n');
-    setFlash('Added "' + prompt.label + '"');
-    if (flashTimer.current) window.clearTimeout(flashTimer.current);
-    flashTimer.current = window.setTimeout(() => setFlash(''), 2200);
-
-    window.setTimeout(() => {
-      const node = areaRef.current;
-      if (!node) return;
-      node.focus();
-      const end = node.value.length;
-      node.setSelectionRange(end, end);
-    }, 0);
-  }
+  const words = hasText ? content.trim().split(/\s+/).length : 0;
 
   async function handleSave(e) {
     e.preventDefault();
@@ -695,102 +275,41 @@ function NoteEditor({ note, test, onSave, onCancel, saving }) {
   }
 
   return (
-    <div className="nts-root">
-      <div className="nts-wrap">
-        <header className="nts-head">
-          <button className="nts-back" type="button" onClick={onCancel}>
-            <NtsIcon name="back" size={17} /> Back
-          </button>
-          <div className="nts-head__txt">
-            <h1>{hasText ? 'Edit Note' : 'New Note'}</h1>
-            <p>Write down your mistakes, track your learning and build a stronger you!</p>
-          </div>
-          <div className="nts-head__art">
-            <NtsBulbArt />
-            <span className="nts-head__slogan">
-              Small notes.<br />
-              <b>Big progress!</b>
-            </span>
-          </div>
-        </header>
-
-        <section className="nts-editor">
-          <div className="nts-editor__test">
-            <span className="nts-editor__badge"><NtsIcon name="doc" size={20} /></span>
-            <div className="nts-editor__testinfo">
-              <strong>{test ? test.title : 'Unknown Test'}</strong>
-              {test && test.description
-                ? <p>{test.description}</p>
-                : <p>Keep this note short and specific - you will read it again before the next test.</p>}
-            </div>
-          </div>
-
-          <form onSubmit={handleSave} className="nts-editor__form">
-            <p className="nts-editor__prompt">
-              Mistakes I made, what I learnt, and what I must revise before the next test:
-            </p>
-
-            <div className="nts-chips">
-              <span className="nts-chips__label">Quick start:</span>
-              {NTS_PROMPTS.map((p) => {
-                const done = promptDone(p.head);
-                return (
-                  <button
-                    key={p.head}
-                    type="button"
-                    className={`nts-chip${done ? ' nts-chip--done' : ''}`}
-                    onClick={() => addPrompt(p)}
-                    title={done ? `"${p.label}" is already in this note` : `Add a "${p.label}" section`}
-                  >
-                    <NtsIcon name={done ? 'check' : p.icon} size={15} /> {p.label}
-                  </button>
-                );
-              })}
-              <span className="nts-chips__flash">{flash}</span>
-            </div>
-
-            <textarea
-              ref={areaRef}
-              className="nts-editor__area"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder={'Q12 Physics - I rushed the rotation formula.\nLearnt: always write the torque balance first.\nRevise: moment of inertia of standard bodies.'}
-              rows={18}
-              spellCheck={true}
-            />
-
-            {error ? <p className="nts-editor__error">{error}</p> : null}
-
-            <div className="nts-editor__foot">
-              <span className="nts-editor__count">
-                {words} {words === 1 ? 'word' : 'words'} {'\u00B7'} {content.length} characters
-              </span>
-              <div className="nts-editor__actions">
-                <button type="button" className="nts-btn nts-btn--ghost" onClick={onCancel}>Cancel</button>
-                <button
-                  type="submit"
-                  className="nts-btn nts-btn--primary"
-                  disabled={saving || !hasText}
-                  title={hasText ? 'Save this note' : 'Write something before saving'}
-                >
-                  {saving ? 'Saving...' : 'Save Note'}
-                </button>
-              </div>
-            </div>
-          </form>
-        </section>
-
-        <div className="nts-tip">
-          <span className="nts-tip__icon"><NtsIcon name="bulb" size={22} /></span>
-          <span className="nts-tip__label">Pro Tip:</span>
-          <span className="nts-tip__div" />
-          <p>Include what you got wrong, why it happened, and how you{'\u2019'}ll avoid it next time.</p>
-        </div>
+    <div className="note-editor-page">
+      <div className="note-editor-header">
+        <button className="btn-secondary" onClick={onCancel}>Back</button>
+        <h1>{hasText ? 'Edit Note' : 'New Note'}</h1>
       </div>
+
+      <div className="note-editor-test-info">
+        <strong>{test ? test.title : 'Unknown Test'}</strong>
+        {test && test.description ? <p className="muted">{test.description}</p> : null}
+      </div>
+
+      <form onSubmit={handleSave} className="note-editor-form">
+        <p className="note-editor-prompt">
+          Mistakes I made, what I learnt, and what I must revise before the next test:
+        </p>
+        <textarea
+          className="note-editor-textarea"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder={'Q12 Physics - I rushed the rotation formula.\nLearnt: always write the torque balance first.\nRevise: moment of inertia of standard bodies.'}
+          rows={18}
+          spellCheck={true}
+        />
+        {error ? <p className="error">{error}</p> : null}
+        <div className="note-editor-actions">
+          <span className="note-editor-count">{words} words</span>
+          <button type="button" className="btn-secondary" onClick={onCancel}>Cancel</button>
+          <button type="submit" className="btn-primary" disabled={saving}>
+            {saving ? 'Saving...' : 'Save Note'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
-
 // App - realistic JEE Main mock-test interface.
 
 //   ?test_id=N  pick a specific test (default: first published test)
@@ -2234,15 +1753,6 @@ const [historyLoading, setHistoryLoading] = useState(false);
           setPhase('instructions');
         }}
         userId={userId}
-        tests={tests}
-        user={user}
-        darkMode={darkMode}
-        onToggleDark={() => setDarkMode((v) => !v)}
-        showProfileMenu={showProfileMenu}
-        setShowProfileMenu={setShowProfileMenu}
-        onHome={() => { setResultData(null); setResultError(''); setPhase('start'); }}
-        onNotes={openNotes}
-        onLogout={handleLogout}
         onOpenNote={(testId, title) => openNoteForTest({ id: testId, title: title }, 'history')}
       />
 
@@ -2952,635 +2462,107 @@ if (phase === 'instructions' && pendingTest) {
 
 // ---------------------------------------------------------------------------
 
-// ===========================================================================
-// MY HISTORY - split view redesign (hp-* shell from home.css + hsh-* styles)
-//   left pane  : "Mock Tests" - every published test as a card (+ search and
-//                status chips). Clicking a card selects that test.
-//   right pane : every attempt made on the selected test - 2 attempts -> 2
-//                cards, 3 attempts -> 3 cards, each opening its own analysis.
-// ===========================================================================
-
-// --- helpers ---------------------------------------------------------------
-
-// "JEE Main 2026 Moderate Mock A (Full Length)" -> "JEE Main 2026 Moderate Mock A"
-function hshShortTitle(title) {
-  return String(title || '')
-    .replace(/\s*[\(\[]\s*full\s*length\s*[\)\]]\s*$/i, '')
-    .trim();
-}
-
-function hshIsFullLength(title) {
-  return /full\s*length/i.test(String(title || ''));
-}
-
-// "9 Jun 2026, 5:51 PM"
-function hshDateTime(value) {
-  if (!value) return '';
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return '';
-  const date = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-  const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-  return `${date}, ${time}`;
-}
-
-function hshMark(value) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n.toFixed(2) : '0.00';
-}
-
-function hshAgoTime(value) {
-  if (!value) return 0;
-  const t = new Date(value).getTime();
-  return Number.isFinite(t) ? t : 0;
-}
-
-const HSH_ACCENTS = ['blue', 'violet', 'green', 'amber', 'rose', 'indigo'];
-
-const HSH_ACCENT_BY_INDEX = (i) => HSH_ACCENTS[i % HSH_ACCENTS.length];
-
-// --- icons -----------------------------------------------------------------
-
-// History-only glyphs, everything else falls through to the HpIcon set.
-function HshIcon({ name, size = 18 }) {
-  const base = {
-    width: size,
-    height: size,
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.8,
-    strokeLinecap: 'round',
-    strokeLinejoin: 'round',
-    'aria-hidden': 'true',
-    focusable: 'false',
-  };
-
-  if (name === 'calendar') {
-    return (
-      <svg {...base}>
-        <rect x="3.4" y="5.2" width="17.2" height="15.4" rx="2.4" />
-        <path d="M3.4 9.6h17.2M8.2 3.2v3.6M15.8 3.2v3.6" />
-      </svg>
-    );
-  }
-
-  if (name === 'back') {
-    return (
-      <svg {...base}>
-        <path d="M20 12H4.6" />
-        <path d="M11 5.4 4.4 12 11 18.6" />
-      </svg>
-    );
-  }
-
-  if (name === 'queue') {
-    return (
-      <svg {...base}>
-        <path d="M7.6 5.4h12.8M7.6 12h12.8M7.6 18.6h12.8" />
-        <path d="M3.6 5.4h.02M3.6 12h.02M3.6 18.6h.02" strokeWidth="2.4" />
-      </svg>
-    );
-  }
-
-  if (name === 'checkcircle') {
-    return (
-      <svg {...base}>
-        <circle cx="12" cy="12" r="8.6" />
-        <path d="M8.2 12.3l2.6 2.6 5-5.2" />
-      </svg>
-    );
-  }
-
-  if (name === 'xcircle') {
-    return (
-      <svg {...base}>
-        <circle cx="12" cy="12" r="8.6" />
-        <path d="M9.2 9.2l5.6 5.6M14.8 9.2l-5.6 5.6" />
-      </svg>
-    );
-  }
-
-  if (name === 'history') {
-    return (
-      <svg {...base}>
-        <path d="M3.6 12a8.4 8.4 0 1 0 2.6-6.1" />
-        <path d="M3.2 4.6v4.2h4.2" />
-        <path d="M12 7.8V12l3.2 1.9" />
-      </svg>
-    );
-  }
-
-  if (name === 'layers') {
-    return (
-      <svg {...base}>
-        <path d="M12 3.4 3.4 8l8.6 4.6L20.6 8z" />
-        <path d="M4.4 12.4 12 16.4l7.6-4" />
-        <path d="M4.4 16.4 12 20.4l7.6-4" />
-      </svg>
-    );
-  }
-
-  if (name === 'mountain') {
-    return (
-      <svg {...base}>
-        <path d="M2.6 19.8h18.8" />
-        <path d="M3.4 19.8 9.6 8.6l3.6 6.2 2-3 5 8" />
-        <path d="M8.2 5.4V2.6" />
-        <path d="M8.2 2.6h4.4l-1.1 1.4 1.1 1.4H8.2z" fill="currentColor" stroke="none" />
-      </svg>
-    );
-  }
-
-  if (name === 'sparkle') {
-    return (
-      <svg {...base} fill="currentColor" stroke="none">
-        <path d="M12 3.6l1.3 4.6 4.6 1.3-4.6 1.3L12 15.4l-1.3-4.6L6.1 9.5l4.6-1.3z" />
-      </svg>
-    );
-  }
-
-  return <HpIcon name={name} size={size} />;
-}
-
-// --- illustration ----------------------------------------------------------
-
-function HshBooksArt() {
-  return (
-    <svg className="hsh-pickhead__art" width="132" height="92" viewBox="0 0 132 92" fill="none" aria-hidden="true">
-      <g strokeLinecap="round" strokeLinejoin="round">
-        <rect x="6" y="62" width="72" height="17" rx="4" fill="#f7c948" stroke="#e2a300" strokeWidth="2.2" />
-        <rect x="14" y="46" width="64" height="17" rx="4" fill="#4a86f7" stroke="#1f5ed6" strokeWidth="2.2" />
-        <rect x="2" y="30" width="60" height="17" rx="4" fill="#ffffff" stroke="#8fb4ee" strokeWidth="2.2" />
-        <path d="M12 39h22" stroke="#a8c6f2" strokeWidth="2.2" />
-        <path d="M92 82h34l-5 10h-24z" fill="#7cc7d9" stroke="#3f9cb4" strokeWidth="2.2" />
-        <path d="M109 82V58" stroke="#2f9e5f" strokeWidth="2.2" />
-        <path d="M109 64c-11-2-18-9-18-19 10 0 17 7 18 19z" fill="#63c88a" stroke="#2f9e5f" strokeWidth="2" />
-        <path d="M109 66c10-5 15-13 13-23-10 2-15 10-13 23z" fill="#4cbb77" stroke="#2f9e5f" strokeWidth="2" />
-        <path d="M76 22l2.4 5.6 5.6 2.4-5.6 2.4L76 38l-2.4-5.6L68 30l5.6-2.4z" fill="#9ec1f5" />
-        <path d="M124 30l1.6 3.8 3.9 1.7-3.9 1.6-1.6 3.9-1.7-3.9-3.8-1.6 3.8-1.7z" fill="#c2d8fb" />
-      </g>
-    </svg>
-  );
-}
-
-// --- sidebar / topbar (hp-* classes, shared with the home page) -------------
-
-function HshSidebar({ active, onHome, onHistory, onNotes, onLogout, darkMode, onToggleDark }) {
-  return (
-    <aside className="hp-side">
-      <div className="hp-brand">
-        <span className="hp-brand__logo">A</span>
-        <div>
-          <h1 className="hp-brand__name">Ace It Up</h1>
-          <p className="hp-brand__tag">Practice {'\u00B7'} Improve {'\u00B7'} Achieve</p>
-        </div>
-      </div>
-
-      <nav className="hp-nav">
-        <button
-          className={`hp-nav__item${active === 'home' ? ' hp-nav__item--active' : ''}`}
-          type="button"
-          onClick={onHome}
-        >
-          <HshIcon name="home" /> Home
-        </button>
-        <button
-          className={`hp-nav__item${active === 'history' ? ' hp-nav__item--active' : ''}`}
-          type="button"
-          onClick={onHistory}
-        >
-          <HshIcon name="history" /> My History
-        </button>
-        <button
-          className={`hp-nav__item${active === 'notes' ? ' hp-nav__item--active' : ''}`}
-          type="button"
-          onClick={onNotes}
-        >
-          <HshIcon name="note" /> Notes
-        </button>
-        <button className="hp-nav__item" type="button" onClick={onToggleDark}>
-          <HshIcon name={darkMode ? 'sun' : 'moon'} /> {darkMode ? 'Light Mode' : 'Dark Mode'}
-        </button>
-      </nav>
-
-      <div className="hp-promo">
-        <span className="hp-promo__icon"><HshIcon name="mountain" size={22} /></span>
-        <p>
-          Small steps<br />
-          every day lead to<br />
-          <b>big results!</b>
-        </p>
-        <span className="hp-promo__dot hp-promo__dot--a" />
-        <span className="hp-promo__dot hp-promo__dot--b" />
-        <span className="hp-promo__dot hp-promo__dot--c" />
-      </div>
-
-      <button className="hp-logout" type="button" onClick={onLogout}>
-        <HshIcon name="logout" /> Logout
-      </button>
-    </aside>
-  );
-}
-
-function HshTopbar({
-  user, searchQuery, onSearch, darkMode, onToggleDark,
-  showProfileMenu, setShowProfileMenu, onHome, onHistory, onNotes, onLogout,
-}) {
-  const initial = user && user.full_name ? user.full_name.charAt(0).toUpperCase() : 'A';
-
-  return (
-    <header className="hsh-bar">
-      <div className="hp-search">
-        <HshIcon name="search" size={18} />
-        <input
-          type="text"
-          placeholder="Search tests..."
-          value={searchQuery}
-          onChange={(e) => onSearch(e.target.value)}
-        />
-        {searchQuery && (
-          <button className="hp-search__clear" type="button" onClick={() => onSearch('')} title="Clear search">
-            {'\u00D7'}
-          </button>
-        )}
-      </div>
-
-      <div className="hp-topbar__spacer" />
-
-      <div className="hp-avatar-wrap">
-        <button className="hp-avatar" type="button" onClick={() => setShowProfileMenu((v) => !v)}>
-          {initial}
-        </button>
-        {showProfileMenu && (
-          <div className="hp-menu">
-            <div className="hp-menu__name">{user && user.full_name}</div>
-            <div className="hp-menu__email">{user && user.email}</div>
-            <button type="button" onClick={() => { setShowProfileMenu(false); onHome(); }}>Home</button>
-            <button type="button" onClick={() => { setShowProfileMenu(false); onHistory(); }}>My History</button>
-            <button type="button" onClick={() => { setShowProfileMenu(false); onNotes(); }}>Notes</button>
-            <button type="button" onClick={onToggleDark}>{darkMode ? 'Light Mode' : 'Dark Mode'}</button>
-            <button type="button" onClick={onLogout}>Logout</button>
-          </div>
-        )}
-      </div>
-
-      <button className="hp-theme" type="button" onClick={onToggleDark}>
-        <HshIcon name={darkMode ? 'sun' : 'moon'} size={17} />
-        <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
-      </button>
-    </header>
-  );
-}
-
-// --- one test card in the left pane ---------------------------------------
-
-function HshTestCard({ card, selected, onSelect }) {
-  const pct = card.best != null && card.max_marks > 0 ? ((card.best / card.max_marks) * 100).toFixed(1) : null;
-
-  return (
-    <button
-      type="button"
-      className={`hsh-pick${selected ? ' hsh-pick--on' : ''}`}
-      onClick={() => onSelect(selected ? null : card.test_id)}
-      title={card.title}
-      aria-pressed={selected}
-    >
-      <div className="hsh-pick__top">
-        {card.fullLength && <span className="hsh-pick__tag">Full Length</span>}
-        {card.attempts > 0 && (
-          <span className="hsh-pick__count" title={`${card.attempts} attempt(s) on this test`}>
-            <HshIcon name="layers" size={12} />
-            {card.attempts} {card.attempts === 1 ? 'attempt' : 'attempts'}
-          </span>
-        )}
-        {card.completed > 0 && (
-          <span className="hsh-pick__check" title="You have completed this test">
-            <HshIcon name="check" size={13} />
-          </span>
-        )}
-      </div>
-
-      <h3 className="hsh-pick__title">{card.short}</h3>
-
-      <div className="hsh-pick__meta">
-        <span><HshIcon name="clock" size={14} /> {card.duration} min</span>
-        {card.last != null && <span><HshIcon name="calendar" size={14} /> {hshDateTime(card.last)}</span>}
-      </div>
-
-      {card.best != null ? (
-        <div className="hsh-pick__score">
-          Best {hshMark(card.best)} / {hshMark(card.max_marks)}
-          {pct != null && <em>({pct}%)</em>}
-        </div>
-      ) : (
-        <div className="hsh-pick__score hsh-pick__score--none">
-          {card.attempts > 0 ? `${card.attempts} in progress` : 'Not attempted yet'}
-        </div>
-      )}
-
-      {card.attempts > 0 ? (
-        <span className="hsh-pick__cta">
-          {selected ? 'Viewing attempts' : 'View attempts'} <HshIcon name="arrow" size={15} />
-        </span>
-      ) : (
-        <span className="hsh-pick__cta hsh-pick__cta--none">No attempts yet</span>
-      )}
-    </button>
-  );
-}
-
-// --- one attempt card (right pane) ----------------------------------------
-
-function HshAttemptCard({ attempt, accent, position, onAnalysis, onResume, onNotes }) {
-  const max = Number(attempt.max_marks) || 300;
-  const marks = attempt.total_marks == null ? null : Number(attempt.total_marks);
-  const pct = marks != null && max > 0 ? ((marks / max) * 100).toFixed(1) : null;
-
-  const tone = marks == null ? 'zero' : marks > 0 ? 'good' : marks === 0 ? 'zero' : 'neg';
-  const scoreClass = 'hsh-score' + (tone === 'zero' ? ' hsh-score--zero' : tone === 'neg' ? ' hsh-score--neg' : '');
-
-  const done = attempt.status === 'submitted' || attempt.status === 'expired';
-  const statusLabel = attempt.status === 'in_progress'
-    ? 'In Progress'
-    : attempt.status === 'expired' ? 'Expired' : 'Submitted';
-
-  return (
-    <article className={`hsh-attempt hsh-attempt--${accent}`}>
-      <div className="hsh-attempt__top">
-        <span className="hsh-attempt__icon"><HshIcon name="doc" size={20} /></span>
-
-        <div className="hsh-attempt__main">
-          <div className="hsh-attempt__line">
-            <h3 className="hsh-attempt__title">
-              {position ? `Attempt ${position}` : (hshShortTitle(attempt.test_title) || 'Mock Test')}
-            </h3>
-            {hshIsFullLength(attempt.test_title) && <span className="hsh-tag">Full Length</span>}
-          </div>
-          <div className="hsh-attempt__meta">
-            <span><HshIcon name="calendar" size={15} /> {hshDateTime(attempt.started_at) || 'Not started'}</span>
-            <span><HshIcon name="clock" size={15} /> {attempt.duration_minutes || 180} min</span>
-          </div>
-        </div>
-
-        <button
-          className="hsh-attempt__chev"
-          type="button"
-          title={done ? 'View analysis' : 'Resume attempt'}
-          onClick={() => (done ? onAnalysis(attempt.id) : onResume(attempt.test_id, attempt.id))}
-        >
-          <HshIcon name="chevron" size={16} />
-        </button>
-      </div>
-
-      <div className="hsh-attempt__foot">
-        {marks != null ? (
-          <span className={scoreClass}>
-            {hshMark(marks)} / {hshMark(max)}
-            {pct != null && <em>({pct}%)</em>}
-          </span>
-        ) : (
-          <span className="hsh-score hsh-score--zero">Not scored yet</span>
-        )}
-
-        <span className={`hsh-badge hsh-badge--${attempt.status}`}>
-          {done && <HshIcon name="check" size={13} />}
-          {statusLabel}
-        </span>
-
-        <div className="hsh-attempt__actions">
-          {done ? (
-            <button className="hsh-btn hsh-btn--analysis" type="button" onClick={() => onAnalysis(attempt.id)}>
-              <HshIcon name="chart" size={16} /> View Analysis
-            </button>
-          ) : (
-            <button
-              className="hsh-btn hsh-btn--resume"
-              type="button"
-              onClick={() => onResume(attempt.test_id, attempt.id)}
-            >
-              <HshIcon name="arrow" size={16} /> Resume Attempt
-            </button>
-          )}
-          <button className="hsh-btn hsh-btn--notes" type="button" onClick={() => onNotes(attempt.test_id, attempt.test_title)}>
-            <HshIcon name="note" size={16} /> Notes
-          </button>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// HistoryPage - split view: mock test cards on the left, and for the test you
-// click, every attempt made on it (one analysis card each) on the right.
-// ---------------------------------------------------------------------------
-
 function HistoryPage({
   attempts, loading, error, selectedTestId, result, resultLoading, resultError,
-  userId, tests, user, darkMode, onToggleDark, showProfileMenu, setShowProfileMenu,
-  onBack, onHome, onLogout, onNotes, onSelectTest, onBackToTestsList, onViewAnalysis,
-  onResume, onOpenNote,
+  userId, onBack, onSelectTest, onBackToTestsList, onViewAnalysis, onResume, onOpenNote,
 }) {
-  const [statusFilter, setStatusFilter] = useState('all');   // all | completed | progress | pending
-  const [histQuery, setHistQuery] = useState('');
-  const rightScrollRef = useRef(null);
 
-  // -------- group the flat attempt list by test --------------------------
+  // Group the flat attempt list by test.
+
   const groups = useMemo(() => {
+
     const map = new Map();
+
     for (const a of attempts) {
-      const key = String(a.test_id);
-      if (!map.has(key)) {
-        map.set(key, {
+
+      if (!map.has(a.test_id)) {
+
+        map.set(a.test_id, {
+
           test_id: a.test_id,
+
           title: a.test_title,
+
           duration_minutes: a.duration_minutes,
+
           max_marks: Number(a.max_marks) || 0,
+
           attempts: [],
+
         });
+
       }
-      map.get(key).attempts.push(a);
+
+      map.get(a.test_id).attempts.push(a);
+
     }
+
     return [...map.values()];
+
   }, [attempts]);
 
-  // -------- every published test, merged with whatever attempts it has ----
-  const testCards = useMemo(() => {
-    const byId = new Map();
-    for (const g of groups) byId.set(String(g.test_id), g);
 
-    const rows = [];
-    for (const t of (tests || [])) {
-      const key = String(t.id);
-      rows.push({ test: t, group: byId.get(key) || null });
-      byId.delete(key);
-    }
-    for (const g of byId.values()) rows.push({ test: null, group: g });
 
-    const built = rows.map(({ test, group }) => {
-      const title = (test && test.title) || (group && group.title) || 'Mock Test';
-      const list = group ? group.attempts : [];
-
-      let best = null;
-      let completed = 0;
-      let inProgress = 0;
-      let last = null;
-
-      for (const a of list) {
-        if (a.status === 'submitted') {
-          completed += 1;
-          const v = Number(a.total_marks);
-          if (Number.isFinite(v)) best = best == null ? v : Math.max(best, v);
-        } else if (a.status === 'in_progress') {
-          inProgress += 1;
-        }
-        const at = hshAgoTime(a.started_at);
-        if (at > 0 && (last == null || at > last)) last = at;
-      }
-
-      return {
-        test_id: group ? group.test_id : test.id,
-        title,
-        short: hshShortTitle(title) || 'Mock Test',
-        fullLength: hshIsFullLength(title),
-        duration: (test && test.duration_minutes) || (group && group.duration_minutes) || 180,
-        max_marks: (group && Number(group.max_marks)) || 300,
-        best,
-        last,
-        attempts: list.length,
-        completed,
-        inProgress,
-      };
-    });
-
-    // attempted tests first (most recent first), then the untouched ones
-    built.sort((a, b) => {
-      if (a.attempts > 0 && b.attempts === 0) return -1;
-      if (b.attempts > 0 && a.attempts === 0) return 1;
-      if (a.attempts > 0 && b.attempts > 0) return (b.last || 0) - (a.last || 0);
-      return asId(a.test_id) - asId(b.test_id);
-    });
-
-    return built;
-  }, [groups, tests]);
-
-  // -------- left pane: which test cards survive search + status chips -----
-  const visibleCards = useMemo(() => {
-    let list = testCards;
-
-    if (statusFilter === 'completed') list = list.filter((c) => c.completed > 0);
-    else if (statusFilter === 'progress') list = list.filter((c) => c.inProgress > 0);
-    else if (statusFilter === 'pending') list = list.filter((c) => c.completed === 0);
-
-    const q = histQuery.trim().toLowerCase();
-    if (q) list = list.filter((c) => String(c.title || '').toLowerCase().includes(q));
-
-    return list;
-  }, [testCards, statusFilter, histQuery]);
-
-  // -------- right pane: the selected test and ALL of its attempts --------
-  const selectedCard = selectedTestId == null
-    ? null
-    : testCards.find((c) => asId(c.test_id) === asId(selectedTestId)) || null;
-
-  const selectedAttempts = useMemo(() => {
-    if (selectedTestId == null) return [];
-    return attempts
-      .filter((a) => asId(a.test_id) === asId(selectedTestId))
-      .slice()
-      .sort((a, b) => hshAgoTime(a.started_at) - hshAgoTime(b.started_at));
-  }, [attempts, selectedTestId]);
-
-  const selectedStats = useMemo(() => {
-    let best = null;
-    let completed = 0;
-    let inProgress = 0;
-    let last = null;
-    for (const a of selectedAttempts) {
-      if (a.status === 'submitted') {
-        completed += 1;
-        const v = Number(a.total_marks);
-        if (Number.isFinite(v)) best = best == null ? v : Math.max(best, v);
-      } else if (a.status === 'in_progress') {
-        inProgress += 1;
-      }
-      const at = hshAgoTime(a.started_at);
-      if (at > 0 && (last == null || at > last)) last = at;
-    }
-    return { best, completed, inProgress, last };
-  }, [selectedAttempts]);
-
-  // always show the top of the selected test's attempts
-  useEffect(() => {
-    if (rightScrollRef.current) rightScrollRef.current.scrollTop = 0;
-  }, [selectedTestId]);
-
-  const selectedTitle = selectedCard
-    ? selectedCard.short
-    : (selectedTestId == null
-      ? null
-      : ((attempts.find((a) => asId(a.test_id) === asId(selectedTestId)) || {}).test_title || 'Mock Test'));
-
-  // ----- analysis loading / error keep the shell of the right pane --------
   if (resultLoading) {
+
     return (
-      <div className="hp-root">
-        <HshSidebar
-          active="history" onHome={onBack} onHistory={onBackToTestsList}
-          onNotes={onNotes} onLogout={onLogout} darkMode={darkMode} onToggleDark={onToggleDark}
-        />
-        <div className="hp-main">
-          <div className="hsh-split">
-            <section className="hsh-pane hsh-pane--attempts" style={{ flex: '1 1 100%' }}>
-              <div className="hsh-bar">
-                <button className="hsh-back" type="button" onClick={onBackToTestsList}>
-                  <HshIcon name="back" size={17} /> Back to History
-                </button>
-              </div>
-              <div className="hsh-pane__scroll">
-                <div className="hsh-skel" />
-                <div className="hsh-skel" style={{ height: 84 }} />
-                <p className="muted">Loading performance analysis...</p>
-              </div>
-            </section>
-          </div>
+
+      <div className="history-page">
+
+        <button className="btn-ghost" onClick={onBack}>Back to Tests</button>
+
+        <h1 className="history-title">My History</h1>
+
+        <div className="skeleton-card" style={{ marginTop: 16 }}>
+
+          <div className="skeleton skeleton-line skeleton-line--title" />
+
+          <div className="skeleton skeleton-line" />
+
+          <div className="skeleton skeleton-line skeleton-line--short" />
+
         </div>
+
+        <p className="muted" style={{ marginTop: 12 }}>Loading performance analysis...</p>
+
       </div>
+
     );
+
   }
+
+
 
   if (resultError) {
+
     return (
-      <div className="hp-root">
-        <HshSidebar
-          active="history" onHome={onBack} onHistory={onBackToTestsList}
-          onNotes={onNotes} onLogout={onLogout} darkMode={darkMode} onToggleDark={onToggleDark}
-        />
-        <div className="hp-main">
-          <div className="hsh-split">
-            <section className="hsh-pane hsh-pane--attempts" style={{ flex: '1 1 100%' }}>
-              <div className="hsh-bar">
-                <button className="hsh-back" type="button" onClick={onBackToTestsList}>
-                  <HshIcon name="back" size={17} /> Back to History
-                </button>
-              </div>
-              <div className="hsh-pane__scroll">
-                <div className="hsh-error">{resultError}</div>
-                <div>
-                  <button className="hsh-btn hsh-btn--analysis" type="button" onClick={onBackToTestsList}>
-                    Back to Attempts
-                  </button>
-                </div>
-              </div>
-            </section>
-          </div>
+
+      <div className="history-page">
+
+        <button className="btn-ghost" onClick={onBackToTestsList}>Back</button>
+
+        <h1 className="history-title">My History</h1>
+
+        <div className="history-error">
+
+          <p>{resultError}</p>
+
+          <button className="btn-primary" onClick={onBackToTestsList}>Back to Attempts</button>
+
         </div>
+
       </div>
+
     );
+
   }
 
+
+
   if (result) {
+
     return (
+
       <Analysis
         result={result}
         userId={userId}
@@ -3588,239 +2570,267 @@ function HistoryPage({
         onBackHome={onBack}
         backLabel="Back to History"
       />
+
     );
+
   }
 
-  const filters = [
-    { key: 'all', label: 'All Tests', icon: 'queue', cls: '' },
-    { key: 'completed', label: 'Completed', icon: 'checkcircle', cls: ' hsh-chip--completed' },
-    { key: 'progress', label: 'In Progress', icon: 'clock', cls: ' hsh-chip--progress' },
-    { key: 'pending', label: 'Not Completed', icon: 'xcircle', cls: ' hsh-chip--pending' },
-  ];
 
-  const noAttemptsAtAll = !loading && !error && attempts.length === 0;
+
+  const selected = groups.find((g) => g.test_id === selectedTestId);
+
+
 
   return (
-    <div className="hp-root">
-      <HshSidebar
-        active="history"
-        onHome={onBack}
-        onHistory={onBackToTestsList}
-        onNotes={onNotes}
-        onLogout={onLogout}
-        darkMode={darkMode}
-        onToggleDark={onToggleDark}
-      />
 
-      <div className="hp-main">
-        <div className="hsh-split">
-          {/* ---------------- left: pick a mock test ---------------- */}
-          <section className="hsh-pane hsh-pane--tests">
-            <HshTopbar
-              user={user}
-              searchQuery={histQuery}
-              onSearch={setHistQuery}
-              darkMode={darkMode}
-              onToggleDark={onToggleDark}
-              showProfileMenu={showProfileMenu}
-              setShowProfileMenu={setShowProfileMenu}
-              onHome={onBack}
-              onHistory={onBackToTestsList}
-              onNotes={onNotes}
-              onLogout={onLogout}
-            />
+    <div className="history-page">
 
-            <div className="hsh-pane__scroll">
-              <div className="hsh-pickhead">
-                <span className="hsh-pickhead__icon"><HshIcon name="doc" size={24} /></span>
-                <div>
-                  <h2 className="hsh-pickhead__title">Mock Tests</h2>
-                  <p>Pick a mock test to see every attempt you have made on it.</p>
-                </div>
-              </div>
+      <header className="history-header">
 
-              <div className="hsh-filters">
-                {filters.map((f) => (
-                  <button
-                    key={f.key}
-                    type="button"
-                    className={`hsh-chip${f.cls}${statusFilter === f.key ? ' hsh-chip--active' : ''}`}
-                    onClick={() => setStatusFilter(f.key)}
-                  >
-                    <HshIcon name={f.icon} size={16} /> {f.label}
-                  </button>
-                ))}
-              </div>
+        <button className="btn-ghost" onClick={onBack}>Back to Tests</button>
 
-              {loading && (
-                <div className="hsh-pickgrid">
-                  <div className="hsh-skel hsh-skel--card" />
-                  <div className="hsh-skel hsh-skel--card" />
-                  <div className="hsh-skel hsh-skel--card" />
-                  <div className="hsh-skel hsh-skel--card" />
-                </div>
-              )}
+        <h1 className="history-title">My History</h1>
 
-              {!loading && error && <div className="hsh-error">{error}</div>}
+        <p className="muted">Select a mock test to review your previous attempts and performance.</p>
 
-              {noAttemptsAtAll && (
-                <div className="hsh-empty">
-                  <h3>No attempts yet</h3>
-                  <p>Take a mock test and your attempt history will show up here with a full analysis.</p>
-                  <div style={{ marginTop: 14 }}>
-                    <button className="hsh-btn hsh-btn--analysis" type="button" onClick={onBack}>
-                      <HshIcon name="arrow" size={16} /> Browse Tests
-                    </button>
-                  </div>
-                </div>
-              )}
+      </header>
 
-              {!loading && !error && !noAttemptsAtAll && visibleCards.length === 0 && (
-                <div className="hsh-empty">
-                  <h3>Nothing matches</h3>
-                  <p>No mock test matches this search or filter. Try another status or clear the search.</p>
-                  <div style={{ marginTop: 14 }}>
-                    <button
-                      className="hsh-btn hsh-btn--analysis"
-                      type="button"
-                      onClick={() => { setStatusFilter('all'); setHistQuery(''); }}
-                    >
-                      Clear filters
-                    </button>
-                  </div>
-                </div>
-              )}
 
-              {!loading && !error && visibleCards.length > 0 && (
-                <div className="hsh-pickgrid">
-                  {visibleCards.map((c) => (
-                    <HshTestCard
-                      key={c.test_id}
-                      card={c}
-                      selected={selectedTestId != null && asId(c.test_id) === asId(selectedTestId)}
-                      onSelect={onSelectTest}
-                    />
-                  ))}
-                </div>
-              )}
 
-              {!loading && !error && testCards.length > 0 && (
-                <p className="hsh-count">
-                  Showing {visibleCards.length} of {testCards.length} mock tests
-                </p>
-              )}
-            </div>
-          </section>
+      {loading && (
 
-          {/* ---------------- right: every attempt on the selected test ------- */}
-          <section className="hsh-pane hsh-pane--attempts">
-            <div className="hsh-bar hsh-bar--picker">
-              {selectedCard ? (
-                <button
-                  className="hsh-back"
-                  type="button"
-                  onClick={() => onSelectTest(null)}
-                  title="Back to all mock tests"
-                >
-                  <HshIcon name="back" size={17} /> All Tests
-                </button>
-              ) : (
-                <span className="hsh-bar__label">
-                  <HshIcon name="chart" size={17} /> Attempt Analysis
-                </span>
-              )}
-              <button className="hp-theme" type="button" onClick={onToggleDark}>
-                <HshIcon name={darkMode ? 'sun' : 'moon'} size={17} />
-                <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
-              </button>
-            </div>
+        <div className="history-loading">
 
-            <div className="hsh-pane__scroll" ref={rightScrollRef}>
-              {!selectedCard ? (
-                <>
-                  <div className="hsh-pickhead">
-                    <span className="hsh-pickhead__icon"><HshIcon name="chart" size={26} /></span>
-                    <div>
-                      <h2>Attempt Analysis</h2>
-                      <p>Click a mock test on the left and every attempt made on it appears here.</p>
-                    </div>
-                    <HshBooksArt />
-                  </div>
+          <div className="skeleton-card">
 
-                  <div className="hsh-empty">
-                    <h3>No mock test selected</h3>
-                    <p>
-                      Choose a mock test card to see its attempts - two attempts if you took it twice,
-                      three if you took it three times - each one opening its own analysis.
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="hsh-attempts-head">
-                    <div className="hsh-attempts-head__txt">
-                      <h2>{selectedTitle}</h2>
-                      <p>
-                        {selectedAttempts.length === 0
-                          ? 'No attempts on this mock test yet'
-                          : `${selectedAttempts.length} ${selectedAttempts.length === 1 ? 'attempt' : 'attempts'} on this mock test`}
-                        {selectedStats.best != null
-                          ? ` \u00B7 best ${hshMark(selectedStats.best)} / ${hshMark(selectedCard.max_marks)}`
-                          : ''}
-                        {selectedStats.inProgress > 0 ? ` \u00B7 ${selectedStats.inProgress} in progress` : ''}
-                      </p>
-                    </div>
-                    {selectedCard.fullLength && <span className="hsh-tag">Full Length</span>}
-                  </div>
+            <div className="skeleton skeleton-line skeleton-line--title" />
 
-                  {loading && (
-                    <div className="hsh-list">
-                      <div className="hsh-skel" />
-                      <div className="hsh-skel" />
-                    </div>
-                  )}
+            <div className="skeleton skeleton-line" />
 
-                  {!loading && error && <div className="hsh-error">{error}</div>}
+            <div className="skeleton skeleton-line skeleton-line--short" />
 
-                  {!loading && !error && selectedAttempts.length === 0 && (
-                    <div className="hsh-empty">
-                      <h3>No attempts yet</h3>
-                      <p>
-                        You have not taken this mock test. Start it from the Home screen and every attempt
-                        will show up here with its own analysis.
-                      </p>
-                      <div style={{ marginTop: 14 }}>
-                        <button className="hsh-btn hsh-btn--analysis" type="button" onClick={onBack}>
-                          <HshIcon name="arrow" size={16} /> Browse Tests
-                        </button>
-                      </div>
-                    </div>
-                  )}
+          </div>
 
-                  {!loading && !error && selectedAttempts.length > 0 && (
-                    <div className="hsh-list">
-                      {selectedAttempts.map((a, i) => (
-                        <HshAttemptCard
-                          key={a.id}
-                          attempt={a}
-                          accent={HSH_ACCENT_BY_INDEX(i)}
-                          position={i + 1}
-                          onAnalysis={onViewAnalysis}
-                          onResume={onResume}
-                          onNotes={(testId, title) => onOpenNote && onOpenNote(testId, hshShortTitle(title))}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </section>
+          <div className="skeleton-card">
+
+            <div className="skeleton skeleton-line skeleton-line--title" />
+
+            <div className="skeleton skeleton-line" />
+
+            <div className="skeleton skeleton-line skeleton-line--short" />
+
+          </div>
+
         </div>
-      </div>
+
+      )}
+
+
+
+      {!loading && error && (
+
+        <div className="history-error">
+
+          <p>{error}</p>
+
+          <button className="btn-primary" onClick={onBack}>Back to Tests</button>
+
+        </div>
+
+      )}
+
+
+
+      {!loading && !error && attempts.length === 0 && (
+
+        <div className="history-empty">
+
+          <h2>No attempts yet</h2>
+
+          <p className="muted">
+
+            Once you take a mock test, your attempt history and performance analysis will appear here.
+
+          </p>
+
+          <button className="btn-primary" onClick={onBack}>Browse Tests</button>
+
+        </div>
+
+      )}
+
+
+
+      {!loading && !error && attempts.length > 0 && selectedTestId == null && (
+
+        <>
+
+          <h2 className="history-subtitle">Choose a Mock Test</h2>
+
+          <div className="history-test-grid">
+
+            {groups.map((g) => {
+
+              const completed = g.attempts.filter((a) => a.status !== 'in_progress');
+
+              const best = completed.reduce(
+
+                (m, a) => Math.max(m, Number(a.total_marks) || 0), null
+
+              );
+
+              return (
+
+                <button key={g.test_id} className="history-test-card" onClick={() => onSelectTest(g.test_id)}>
+
+                  <div className="history-test-card__title">{g.title}</div>
+
+                  <div className="history-test-card__meta">
+
+                    <span>{g.attempts.length} attempt{g.attempts.length === 1 ? '' : 's'}</span>
+
+                    <span>{g.duration_minutes || 180} min</span>
+
+                  </div>
+
+                  <div className="history-test-card__best">
+
+                    {best != null
+
+                      ? <>Best score: <strong>{best}</strong> / {g.max_marks || 300}</>
+
+                      : <span className="muted">No completed attempts yet</span>}
+
+                  </div>
+
+                  <span className="history-test-card__cta">View attempts &#8594;</span>
+
+                </button>
+
+              );
+
+            })}
+
+          </div>
+
+        </>
+
+      )}
+
+
+
+      {!loading && !error && attempts.length > 0 && selectedTestId != null && selected && (
+
+        <>
+
+          <div className="history-attempts-head">
+
+            <button className="btn-ghost" onClick={() => onSelectTest(null)}>All Tests</button>
+
+            <h2 className="history-subtitle">{selected.title}</h2>
+
+            <p className="muted">Pick an attempt below to view its detailed performance analysis.</p>
+
+          </div>
+
+          <div className="history-attempt-list">
+
+            {selected.attempts.map((a, idx) => {
+
+              const done = a.status !== 'in_progress';
+
+              const pct = a.max_marks > 0 && a.total_marks != null
+
+                ? ((Number(a.total_marks) / Number(a.max_marks)) * 100).toFixed(1)
+
+                : null;
+
+              return (
+
+                <div key={a.id} className={`history-attempt-row${done ? ' history-attempt-row--clickable' : ''}`}>
+
+                  <div className="history-attempt-row__main">
+
+                    <div className="history-attempt-row__top">
+
+                      <span className="history-attempt-row__label">Attempt #{selected.attempts.length - idx}</span>
+
+                      <span className={`status-badge status-badge--${a.status}`}>
+
+                        {a.status === 'in_progress' ? 'In Progress' : a.status === 'submitted' ? 'Submitted' : 'Expired'}
+
+                      </span>
+
+                    </div>
+
+                    <div className="history-attempt-row__meta">
+
+                      Started {new Date(a.started_at).toLocaleString()}
+
+                      {a.submitted_at ? <> &#183; Submitted {new Date(a.submitted_at).toLocaleString()}</> : null}
+
+                    </div>
+
+                    <div className="history-attempt-row__score">
+
+                      {a.total_marks != null ? (
+
+                        <>
+
+                          <strong>{a.total_marks}</strong> / {a.max_marks || 300} marks
+
+                          {pct != null && <span className="muted"> ({pct}%)</span>}
+
+                        </>
+
+                      ) : (
+
+                        <span className="muted">Not scored yet</span>
+
+                      )}
+
+                    </div>
+
+                  </div>
+
+                  <div className="history-attempt-row__actions">
+                    {done ? (
+                      <button className="btn-primary" onClick={() => onViewAnalysis(a.id)}>View Analysis</button>
+                    ) : (
+                      <button className="btn-primary" onClick={() => onResume(a.test_id, a.id)}>Resume Attempt</button>
+                    )}
+                    {onOpenNote ? (
+                      <button
+                        className="btn-secondary history-attempt-row__notes"
+                        onClick={() => onOpenNote(a.test_id, selected.title)}
+                      >
+                        Notes
+                      </button>
+                    ) : null}
+                  </div>
+
+                </div>
+
+              );
+
+            })}
+
+          </div>
+
+        </>
+
+      )}
+
     </div>
+
   );
+
 }
+
+
+
+// ---------------------------------------------------------------------------
+
 // ---------------------------------------------------------------------------
 // HOME screen building blocks: inline SVG icon set + shared helpers.
 // ---------------------------------------------------------------------------

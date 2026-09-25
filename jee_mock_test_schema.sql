@@ -194,6 +194,25 @@ CREATE TABLE attempt_journey (
 
 CREATE INDEX idx_attempt_journey_attempt ON attempt_journey (attempt_id, viewed_at);
 
+-- ---------------------------------------------------------------------------
+-- NOTES  (student's personal notes per test attempt)
+--   One note per (user, test). Students can write mistakes, learnings, 
+--   strategies after completing a mock test. Notes are linked to the test,
+--   not a specific attempt, so they accumulate wisdom across retakes.
+-- ---------------------------------------------------------------------------
+CREATE TABLE notes (
+    id           BIGSERIAL PRIMARY KEY,
+    user_id      BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    test_id      BIGINT NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
+    content      TEXT NOT NULL DEFAULT '',
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (user_id, test_id)
+);
+
+CREATE INDEX idx_notes_user ON notes (user_id);
+CREATE INDEX idx_notes_test ON notes (test_id);
+
 
 -- ---------------------------------------------------------------------------
 -- INDEXES
